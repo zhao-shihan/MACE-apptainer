@@ -1,0 +1,77 @@
+Bootstrap: docker
+From: debian:{{DEBIAN_VERSION}}
+
+%arguments
+    DEBIAN_VERSION=trixie
+    MPI_PACKAGE=mpich
+    GEANT4_VERSION=11.1.3
+    ROOT_VERSION=6.30.02
+    SIMD=avx
+
+%post
+    cd /opt
+
+    apt -y update
+    apt -y install apt-utils
+    apt -y upgrade
+    apt -y install curl
+
+    mkdir geant4-build root-build
+    curl https://gitlab.cern.ch/geant4/geant4/-/archive/v{{GEANT4_VERSION}}/geant4-v{{GEANT4_VERSION}}.tar.bz2 -o geant4-build/geant4.tar.bz2 &
+    curl https://root.cern/download/root_v{{ROOT_VERSION}}.source.tar.gz -o root-build/root.tar.gz &
+    apt -y install build-essential clang vim wget git cmake-qt-gui ninja-build libx11-dev libxpm-dev libxft-dev libxext-dev libssl-dev python3-dev python3 python3-venv python3-pip python3-numpy python3-scipy python3-matplotlib python3-notebook python3-pandas python3-sklearn-pandas python3-full libpcre3-dev libglu1-mesa-dev libglew-dev libftgl-dev default-libmysqlclient-dev libfftw3-dev libcfitsio-dev libavahi-compat-libdnssd-dev libldap2-dev libxml2-dev libkrb5-dev libopenblas-dev libopenblas64-dev libtbb-dev libgsl-dev libgif-dev libafterimage-dev davix-dev libgl2ps-dev liblz4-dev lzma-dev nlohmann-json3-dev libvdt-dev libxrootd-client-dev libxrootd-server-dev libxxhash-dev libxerces-c-dev libexpat1-dev qtbase5-dev libxmu-dev libglib2.0-dev gnulib libgmp-dev libmpc-dev libmpfr-dev libzstd-dev doxygen-gui graphviz {{MPI_PACKAGE}} libeigen3-dev libbackward-cpp-dev libmsgsl-dev libyaml-cpp-dev &
+    wait
+
+    apt -y autopurge
+    apt clean
+
+    cd geant4-build
+    tar xf geant4.tar.bz2 &
+    cd ../root-build
+    tar xf root.tar.gz &
+    cd ..
+    wait
+
+    cd geant4-build
+    mkdir build
+    cd build
+    cmake -G Ninja ../geant4-v{{GEANT4_VERSION}}/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-m{{SIMD}}" -DCMAKE_CXX_FLAGS="-m{{SIMD}}" -DGEANT4_BUILD_MULTITHREADED=OFF -DGEANT4_INSTALL_DATA=ON -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DGEANT4_BUILD_BUILTIN_BACKTRACE=OFF
+    cd ../..
+
+    cd root-build
+    mkdir build
+    cd build
+    cmake -G Ninja ../root-{{ROOT_VERSION}}/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-m{{SIMD}}" -DCMAKE_CXX_FLAGS="-m{{SIMD}}"
+    cd ../..
+
+    cd geant4-build/build
+    ninja &
+    cd ../../root-build/build
+    ninja &
+    cd ../..
+    wait
+
+    cd geant4-build/build
+    ninja install
+    cd ../../root-build/build
+    ninja install
+    cd ../..
+
+    rm -rf geant4-build &
+    rm -rf root-build &
+    wait
+
+%environment
+    export LC_ALL=C
+    export PATH=/opt/root/bin:/opt/geant4/bin:${PATH}
+    export LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LIBRARY_PATH}
+    export LD_LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LD_LIBRARY_PATH}
+    export MANPATH=/opt/root/man
+    export CMAKE_PREFIX_PATH=/opt/root:/opt/geant4:${CMAKE_PREFIX_PATH}
+    export GEANT4_DATA_DIR=/opt/geant4-data
+    export ROOTSYS=/opt/root
+    export CLING_STANDARD_PCH=none
+
+%labels
+    Author zhaoshihan
+    SIMD {{SIMD}}

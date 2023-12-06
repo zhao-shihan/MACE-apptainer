@@ -1,0 +1,7 @@
+Bootstrap: localimage
+From: rgb-{{SIMD}}.sif
+
+%arguments
+    SIMD=avx
+
+%post
