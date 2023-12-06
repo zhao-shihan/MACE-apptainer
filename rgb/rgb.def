@@ -22,7 +22,7 @@ From: rgb-base.sif
     cd geant4-build/build
     ninja &
     cd ../../root-build/build
-    ninja &
+    ninja
     cd ../..
     wait
 
