@@ -1,0 +1,39 @@
+Bootstrap: localimage
+From: rgb-base.sif
+
+%arguments
+    FLAG0=
+    FLAG1=
+    FLAG2=
+
+%post
+    cd /opt
+
+    cd geant4-build/build
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON
+    ninja
+    ninja install
+    cd ../..
+    rm -rf geant4-build
+
+    cd root-build/build
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON
+    ninja
+    ninja install
+    cd ../..
+    rm -rf root-build
+
+%environment
+    export LC_ALL=C
+    export PATH=/opt/root/bin:/opt/geant4/bin:${PATH}
+    export LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LIBRARY_PATH}
+    export LD_LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LD_LIBRARY_PATH}
+    export MANPATH=/opt/root/man
+    export CMAKE_PREFIX_PATH=/opt/root:/opt/geant4:${CMAKE_PREFIX_PATH}
+    export GEANT4_DATA_DIR=/opt/geant4-data
+    export ROOTSYS=/opt/root
+    export CLING_STANDARD_PCH=none
+
+%labels
+    author zhaoshihan
+    flags {{FLAG0}} {{FLAG1}} {{FLAG2}}
