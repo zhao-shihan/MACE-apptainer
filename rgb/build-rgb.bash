@@ -15,6 +15,8 @@ fi
 apptainer build rgb-base.sif def/rgb-base.def
 apptainer build rgb-tianhe2-mt.sif def/rgb-tianhe2-mt.def
 apptainer build rgb-tianhe2.sif def/rgb-tianhe2.def
+apptainer build --build-arg LOCALIMAGE=rgb-tianhe2-mt.sif rgb-tianhe2-mt-slim.sif def/rgb-slim.def
+apptainer build --build-arg LOCALIMAGE=rgb-tianhe2.sif rgb-tianhe2-slim.sif def/rgb-slim.def
 for ((i = 0; i < ${#tag[@]}; ++i)); do
     apptainer build --build-arg FLAG0=${flag0[$i]} --build-arg FLAG1=${flag1[$i]} --build-arg FLAG2=${flag2[$i]} rgb-${tag[$i]}-mt.sif def/rgb-mt.def
     apptainer build --build-arg FLAG0=${flag0[$i]} --build-arg FLAG1=${flag1[$i]} --build-arg FLAG2=${flag2[$i]} rgb-${tag[$i]}.sif def/rgb.def

@@ -86,4 +86,4 @@ From: debian:{{DEBIAN_VERSION}}
     cd ..
 
 %labels
-    Author zhaoshihan
+    author zhaoshihan

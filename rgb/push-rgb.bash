@@ -3,6 +3,7 @@ tags=(tianhe2 avx2 avx sse3)
 
 success_or_exit() {
     if eval "$1"; then
+        >>/dev/null
     else
         exit 1
     fi
@@ -11,6 +12,8 @@ success_or_exit() {
 for tag in ${tags[@]}; do
     success_or_exit "apptainer verify rgb-$tag-mt.sif"
     success_or_exit "apptainer verify rgb-$tag.sif"
+    success_or_exit "apptainer verify rgb-$tag-mt-slim.sif"
+    success_or_exit "apptainer verify rgb-$tag-slim.sif"
 done
 
 auto_retry() {
@@ -34,10 +37,12 @@ auto_retry() {
     fi
 }
 
-apptainer remote login --username $1 oras://docker.io
+#apptainer remote login --username $1 oras://docker.io
 for tag in ${tags[@]}; do
-    auto_retry 99 "apptainer push rgb-$tag-mt.sif oras://docker.io/zhaoshh/rgb:$tag" &
+    auto_retry 99 "apptainer push rgb-$tag-mt.sif oras://docker.io/zhaoshh/rgb:$tag-mt" &
     auto_retry 99 "apptainer push rgb-$tag.sif oras://docker.io/zhaoshh/rgb:$tag" &
+    auto_retry 99 "apptainer push rgb-$tag-mt-slim.sif oras://docker.io/zhaoshh/rgb:$tag-mt-slim" &
+    auto_retry 99 "apptainer push rgb-$tag-slim.sif oras://docker.io/zhaoshh/rgb:$tag-slim" &
 done
 wait
 apptainer remote logout oras://docker.io
