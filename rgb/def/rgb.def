@@ -29,11 +29,14 @@ From: rgb-base.sif
 
 %environment
     export LC_ALL=C
-    export PATH=/opt/root/bin:/opt/geant4/bin:${PATH}
-    export LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LIBRARY_PATH}
-    export LD_LIBRARY_PATH=/opt/root/lib:/opt/geant4/lib:${LD_LIBRARY_PATH}
-    export MANPATH=/opt/root/man
-    export CMAKE_PREFIX_PATH=/opt/root:/opt/geant4:${CMAKE_PREFIX_PATH}
+    export PATH=/opt/geant4/bin:/opt/root/bin:$PATH
+    export LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=/opt/root/lib:$PYTHONPATH
+    export MANPATH=/opt/root/man:$MANPATH
+    export CMAKE_PREFIX_PATH=/opt/geant4:/opt/root:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=/opt/root/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=/opt/root/etc/notebook:$JUPYTER_CONFIG_DIR
     export GEANT4_DATA_DIR=/opt/geant4-data
     export ROOTSYS=/opt/root
     export CLING_STANDARD_PCH=none

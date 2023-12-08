@@ -28,7 +28,7 @@ auto_retry() {
             break
         else
             attempt=$((attempt + 1))
-            echo "Attempt $attempt failed, retry in $wait_time seconds..."
+            echo "Attempt $attempt failed, retrying in $wait_time seconds..."
             sleep $wait_time
         fi
     done
