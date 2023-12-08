@@ -9,12 +9,15 @@ success_or_exit() {
     fi
 }
 
+success_or_exit "apptainer remote login --username $1 oras://docker.io"
+
 for tag in ${tags[@]}; do
-    success_or_exit "apptainer verify rgb-$tag-mt.sif"
-    success_or_exit "apptainer verify rgb-$tag.sif"
-    success_or_exit "apptainer verify rgb-$tag-mt-slim.sif"
-    success_or_exit "apptainer verify rgb-$tag-slim.sif"
+    success_or_exit "apptainer verify rgb-$tag-mt.sif" &
+    success_or_exit "apptainer verify rgb-$tag.sif" &
+    success_or_exit "apptainer verify rgb-$tag-mt-slim.sif" &
+    success_or_exit "apptainer verify rgb-$tag-slim.sif" &
 done
+wait
 
 auto_retry() {
     local max_attempts=$1
@@ -37,7 +40,6 @@ auto_retry() {
     fi
 }
 
-#apptainer remote login --username $1 oras://docker.io
 for tag in ${tags[@]}; do
     auto_retry 99 "apptainer push rgb-$tag-mt.sif oras://docker.io/zhaoshh/rgb:$tag-mt" &
     auto_retry 99 "apptainer push rgb-$tag.sif oras://docker.io/zhaoshh/rgb:$tag" &
@@ -45,4 +47,5 @@ for tag in ${tags[@]}; do
     auto_retry 99 "apptainer push rgb-$tag-slim.sif oras://docker.io/zhaoshh/rgb:$tag-slim" &
 done
 wait
+
 apptainer remote logout oras://docker.io
