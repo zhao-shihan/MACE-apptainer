@@ -1,0 +1,28 @@
+Bootstrap: localimage
+From: {{LOCALIMAGE}}
+
+%arguments
+    LOCALIMAGE=
+    MACE_SRC=
+    FLAG0=
+    FLAG1=
+    FLAG2=
+
+%files
+    {{MACE_SRC}} /opt
+
+%post
+    cd /opt
+    mkdir MACE-build
+    mv MACE MACE-build
+    cd MACE-build
+    mkdir build
+    cd build
+    cmake -G Ninja ../MACE -DCMAKE_INSTALL_PREFIX=/opt/MACE -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=OFF -DMACE_FULL_UNITY_BUILD=ON
+    ninja
+    ninja install
+    cd ../..
+    rm -rf MACE-build
+
+%environment
+    export PATH=/opt/MACE/bin:$PATH
