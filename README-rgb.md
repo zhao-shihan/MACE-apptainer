@@ -21,19 +21,19 @@
 
 **Pull the image by:**
 
-- **`singularity pull oras://docker.io/zhaoshh/rgb:<isx><aux>`**
+- **`apptainer pull oras://docker.io/zhaoshh/rgb:<isx><aux>`**
 - **`<isx>` can be one of the followings: `avx2`, `avx`, `sse3`, and `tianhe2`.**
-- **`<aux>` can be nothing or `-mt` (for multi-threaded G4 and ROOT) or `-slim` (do not contain G4 data, smaller in size) or `-mt-slim`.**
+- **`<aux>` can be nothing or `-mt` (for multi-threaded G4 and ROOT) or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables) or `-mt-slim`.**
 
-For example, `singularity pull oras://docker.io/zhaoshh/rgb:avx2-mt` pulls down an image compiled with avx2 ISX and multi-threaded G4 and ROOT, `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2-slim` pulls down an image specialized for Tianhe-2 and contains multi-threading disabled G4 and ROOT.
+For example, `apptainer pull oras://docker.io/zhaoshh/rgb:avx2-mt` pulls down an image compiled with avx2 ISX and multi-threaded G4 and ROOT, `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim` pulls down an image specialized for Tianhe-2 and contains multi-threading disabled G4 and ROOT.
 
 If you need a general-purposed image, and have no idea about CPU instruction sets, and you are not using an ancient computer (within 10 years), it is recommended to pull `avx2-mt`:
 
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx2-mt`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx2-mt`
 
 If you are going to run the image on Tianhe-2 supercomputer, here is a specialization:
 
-- `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2`
 
 or with `-mt` or `-slim` or `-mt-slim`, up to your purpose.
 
@@ -41,35 +41,35 @@ or with `-mt` or `-slim` or `-mt-slim`, up to your purpose.
 
 #### Image content
 
-The image contains ROOT and Geant4 libraries, you can use ROOT directly by `singularity run`:
+The image contains ROOT and Geant4 libraries, you can use ROOT directly by `apptainer run`:
 
-- `singularity run rgb.sif root`
+- `apptainer run rgb.sif root`
 
-and it should show the ROOT interface. other ROOT utilities are also available, for example
+and it should show the ROOT interface. Other ROOT utilities are also available, for example
 
-- `singularity run rgb.sif hadd`
-- `singularity run rgb.sif rootcling`
+- `apptainer run rgb.sif hadd`
+- `apptainer run rgb.sif rootcling`
 
 You can also check the Geant4 version or complie flags:
 
-- `singularity run rgb.sif geant4-config --version`
-- `singularity run rgb.sif geant4-config --cflags`
+- `apptainer run rgb.sif geant4-config --version`
+- `apptainer run rgb.sif geant4-config --cflags`
 
 RGB is a basic library image, and it can be used to compile programs depending on ROOT and/or Geant4.
 So it provides common build tools like GCC, CMake, and Ninja:
 
-- `singularity run rgb.sif g++ --version`
-- `singularity run rgb.sif cmake --version`
-- `singularity run rgb.sif ninja --version`
+- `apptainer run rgb.sif g++ --version`
+- `apptainer run rgb.sif cmake --version`
+- `apptainer run rgb.sif ninja --version`
 
 There are many other packages pre-installed in the image.
 Except for ROOT and Geant4, you can check all APT-installed packages:
 
-- `singularity run rgb.sif apt list`
+- `apptainer run rgb.sif apt list`
 
 or list something specific:
 
-- `singularity run rgb.sif apt list libgsl-dev`
+- `apptainer run rgb.sif apt list libgsl-dev`
 
 #### Build your own image
 
@@ -81,9 +81,9 @@ Check [https://apptainer.org/docs/user/latest/build_a_container.html]() for more
 
 Another way you can do is compiling some applications that depends on ROOT/Geant4 with the image, and run in it:
 
-- Configure: `singularity run rgb.sif cmake -G Ninja path/to/src`
-- Build: `singularity run rgb.sif ninja`
-- Run: first run `singularity shell rgb.sif`, and run the program inside the apptainer/singularity shell.
+- Configure: `apptainer run rgb.sif cmake -G Ninja path/to/src`
+- Build: `apptainer run rgb.sif ninja`
+- Run: first run `apptainer shell rgb.sif`, and run the program inside the apptainer shell.
 
 ## Note
 
@@ -102,19 +102,19 @@ Another way you can do is compiling some applications that depends on ROOT/Geant
 
 ## Pull command list
 
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx2`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx2-mt`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx2-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx2-mt-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx-mt`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:avx-mt-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:sse3`
-- `singularity pull oras://docker.io/zhaoshh/rgb:sse3-mt`
-- `singularity pull oras://docker.io/zhaoshh/rgb:sse3-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:sse3-mt-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2`
-- `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2-mt`
-- `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2-slim`
-- `singularity pull oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx2`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx2-mt`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx2-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx2-mt-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx-mt`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:avx-mt-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:sse3`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:sse3-mt`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:sse3-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:sse3-mt-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-mt`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim`
+- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim`
