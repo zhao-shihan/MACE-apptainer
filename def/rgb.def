@@ -28,7 +28,6 @@ From: rgb-base.sif
     rm -rf root-build
 
 %environment
-    export LC_ALL=C
     export PATH=/opt/geant4/bin:/opt/root/bin:$PATH
     export LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH

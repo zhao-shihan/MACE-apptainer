@@ -1,2 +1,3 @@
-bash push-rgb.bash
-bash push-mace.bash
+bash push-rgb.bash $1 $2 &
+bash push-mace.bash $1 $2 &
+wait

@@ -11,6 +11,7 @@
     - [Important note on ISX](#important-note-on-isx)
     - [Quick guide on ISX](#quick-guide-on-isx)
   - [Pull command list](#pull-command-list)
+  - [Known issues](#known-issues)
 
 ## Quick start
 
@@ -82,3 +83,7 @@ Other usage should be the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
 - `apptainer pull oras://docker.io/zhaoshh/mace:sse3-slim`
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2`
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim`
+
+## Known issues
+
+- Stacktrace is currently not available (it will crash into bus error).

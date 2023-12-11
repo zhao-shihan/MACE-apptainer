@@ -9,7 +9,7 @@ success_or_exit() {
     fi
 }
 
-success_or_exit "apptainer remote login --username $1 oras://docker.io"
+success_or_exit "apptainer remote login --username $1 --password $2 oras://docker.io"
 
 for i in ${isx[@]}; do
     success_or_exit "apptainer verify rgb-$i-mt.sif" &
