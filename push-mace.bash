@@ -25,7 +25,6 @@ auto_retry() {
     local attempt=0
     while [ $attempt -lt $max_attempts ]; do
         if eval $command; then
-            echo "Command executed successfully."
             break
         else
             attempt=$((attempt + 1))

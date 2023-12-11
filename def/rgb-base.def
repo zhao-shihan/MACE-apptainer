@@ -25,10 +25,11 @@ From: debian:{{DEBIAN_VERSION}}
     apt -y update
     apt -y install apt-utils
     apt -y upgrade
-    apt -y install wget
+    apt -y install wget build-essential libfabric-dev libhwloc-dev
 
     mkdir mpich-build geant4-data geant4-build root-build
 
+    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich-build/mpich.tar.gz
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4NDL.{{G4NDL_VERSION}}.tar.gz -O geant4-data/G4NDL.tar.gz &
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4EMLOW.{{G4EMLOW_VERSION}}.tar.gz -O geant4-data/G4EMLOW.tar.gz &
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4PhotonEvaporation.{{G4PhotonEvaporation_VERSION}}.tar.gz -O geant4-data/G4PhotonEvaporation.tar.gz &
@@ -45,12 +46,10 @@ From: debian:{{DEBIAN_VERSION}}
     wget -q -c -t=99 https://root.cern/download/root_v{{ROOT_VERSION}}.source.tar.gz -O root-build/root.tar.gz &
 
     cd mpich-build
-    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
     tar -xf mpich.tar.gz
-    apt -y install build-essential
     mkdir build
     cd build
-    ../mpich-{{MPICH_VERSION}}/configure --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-g --enable-fast=all --disable-fortran --disable-cxx --enable-romio --disable-dependency-tracking --disable-static --with-device=ch4:ofi
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-g --enable-fast=O3,ndebug --enable-romio --disable-cxx --disable-fortran --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-libfabric=/usr --with-hwloc=/usr
     make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l) &
     cd ../..
 
