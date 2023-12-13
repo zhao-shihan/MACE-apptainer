@@ -25,11 +25,12 @@ From: debian:{{DEBIAN_VERSION}}
     apt -y update
     apt -y install apt-utils
     apt -y upgrade
-    apt -y install wget build-essential libfabric-dev libhwloc-dev
+    apt -y install build-essential wget curl git cmake ninja-build python3-dev python3 python3-numpy python3-venv python3-pip libx11-dev libxpm-dev libxft-dev libxext-dev libpng-dev libjpeg-dev libssl-dev uuid-dev libpcre3-dev libglu1-mesa-dev libglew-dev libftgl-dev default-libmysqlclient-dev libfftw3-dev libcfitsio-dev libavahi-compat-libdnssd-dev libldap-dev libxml2-dev libkrb5-dev libopenblas-dev libopenblas64-dev libtbb-dev libgsl-dev libunuran-dev liburing-dev libgraphviz-dev libgif-dev libafterimage-dev davix-dev libgl2ps-dev liblz4-dev lzma-dev qtwebengine5-dev nlohmann-json3-dev libvdt-dev libxrootd-client-dev libxrootd-server-dev libxxhash-dev libxerces-c-dev libexpat1-dev qtbase5-dev libxmu-dev libglib2.0-dev gnulib libzstd-dev binutils-dev libdw-dev libunwind-dev libfabric-dev libhwloc-dev libeigen3-dev libfmt-dev libbackward-cpp-dev libmsgsl-dev libyaml-cpp-dev
+    apt -y autopurge
+    apt clean
 
     mkdir mpich-build geant4-data geant4-build root-build
 
-    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich-build/mpich.tar.gz
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4NDL.{{G4NDL_VERSION}}.tar.gz -O geant4-data/G4NDL.tar.gz &
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4EMLOW.{{G4EMLOW_VERSION}}.tar.gz -O geant4-data/G4EMLOW.tar.gz &
     wget -q -c -t=99 https://cern.ch/geant4-data/datasets/G4PhotonEvaporation.{{G4PhotonEvaporation_VERSION}}.tar.gz -O geant4-data/G4PhotonEvaporation.tar.gz &
@@ -46,22 +47,16 @@ From: debian:{{DEBIAN_VERSION}}
     wget -q -c -t=99 https://root.cern/download/root_v{{ROOT_VERSION}}.source.tar.gz -O root-build/root.tar.gz &
 
     cd mpich-build
+    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
     tar -xf mpich.tar.gz
     mkdir build
     cd build
     ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-g --enable-fast=O3,ndebug --enable-romio --disable-cxx --disable-fortran --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-libfabric=/usr --with-hwloc=/usr
-    make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l) &
-    cd ../..
-
-    apt -y install curl git cmake ninja-build python3-dev python3 python3-numpy python3-venv python3-pip libx11-dev libxpm-dev libxft-dev libxext-dev libpng-dev libjpeg-dev libssl-dev uuid-dev libpcre3-dev libglu1-mesa-dev libglew-dev libftgl-dev default-libmysqlclient-dev libfftw3-dev libcfitsio-dev libavahi-compat-libdnssd-dev libldap-dev libxml2-dev libkrb5-dev libopenblas-dev libopenblas64-dev libtbb-dev libgsl-dev libunuran-dev liburing-dev libgraphviz-dev libgif-dev libafterimage-dev davix-dev libgl2ps-dev liblz4-dev lzma-dev qtwebengine5-dev nlohmann-json3-dev libvdt-dev libxrootd-client-dev libxrootd-server-dev libxxhash-dev libxerces-c-dev libexpat1-dev qtbase5-dev libxmu-dev libglib2.0-dev gnulib libzstd-dev binutils-dev libdw-dev libunwind-dev libeigen3-dev libfmt-dev libbackward-cpp-dev libmsgsl-dev libyaml-cpp-dev >/dev/null
-    apt -y autopurge >/dev/null
-    apt clean >/dev/null
-    wait
-
-    cd mpich-build/build
+    make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
     make install
     cd ../..
     rm -rf mpich-build
+    wait
 
     cd geant4-data
     tar -xf G4NDL.tar.gz
