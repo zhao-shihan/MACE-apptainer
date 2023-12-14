@@ -1,7 +1,11 @@
-# isx=(tianhe2 avx512vl avx512f avx2 avx sse3)
-isx=(tianhe2 avx2 avx sse3)
+# isx=(avx512vl avx512f avx2 avx sse3)
+isx=(avx2 avx sse3)
 
+apptainer sign mace-tianhe2.sif
+apptainer sign mace-tianhe2-slim.sif
 for i in ${isx[@]}; do
-    apptainer sign mace-$i.sif
-    apptainer sign mace-$i-slim.sif
+    for mpi in mpich openmpi; do
+        apptainer sign mace-$i-$mpi.sif
+        apptainer sign mace-$i-$mpi-slim.sif
+    done
 done

@@ -1,0 +1,10 @@
+Bootstrap: localimage
+From: rgb-base.sif
+
+%post
+    apt -y install libopenmpi-dev
+    apt -y autopurge
+    apt clean
+
+%labels
+    MPI openmpi

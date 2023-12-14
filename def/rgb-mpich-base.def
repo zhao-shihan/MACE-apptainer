@@ -1,0 +1,34 @@
+Bootstrap: localimage
+From: rgb-base.sif
+
+%arguments
+    MPICH_VERSION=4.1.2
+
+%post
+    apt -y install libhwloc-dev
+    apt -y autopurge
+    apt clean
+
+    cd /opt
+    mkdir mpich-build
+    cd mpich-build
+    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
+    tar -xf mpich.tar.gz
+    mkdir build
+    cd build
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-g --enable-fast=O3,ndebug --enable-romio --disable-cxx --disable-fortran --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-hwloc=/usr
+    make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
+    make install
+    cd ../..
+    rm -rf mpich-build
+
+%labels
+    MPI mpich-{{MPICH_VERSION}}
+
+%environment
+    export LC_ALL=C
+    export PATH=/opt/mpich/bin:$PATH
+    export LIBRARY_PATH=/opt/mpich/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=/opt/mpich/lib:$LD_LIBRARY_PATH
+    export MANPATH=/opt/mpich/share/man:$MANPATH
+    export CMAKE_PREFIX_PATH=/opt/mpich:$CMAKE_PREFIX_PATH

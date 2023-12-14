@@ -1,9 +1,11 @@
 Bootstrap: localimage
-From: {{LOCALIMAGE}}
+From: {{RGB}}
 
 %arguments
-    LOCALIMAGE=
+    RGB=
     MACE_SRC=
+    MACE_COMMIT=
+    MACE_TIME=
 
 %files
     {{MACE_SRC}} /opt
@@ -25,3 +27,6 @@ From: {{LOCALIMAGE}}
     export PATH=/opt/MACE/bin:$PATH
     export LIBRARY_PATH=/opt/MACE/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=/opt/MACE/lib:$LD_LIBRARY_PATH
+
+%labels
+    MACE {{MACE_COMMIT}} ({{MACE_TIME}})
