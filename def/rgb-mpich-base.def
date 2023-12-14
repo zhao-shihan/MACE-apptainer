@@ -26,7 +26,6 @@ From: rgb-base.sif
     MPI mpich-{{MPICH_VERSION}}
 
 %environment
-    export LC_ALL=C
     export PATH=/opt/mpich/bin:$PATH
     export LIBRARY_PATH=/opt/mpich/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=/opt/mpich/lib:$LD_LIBRARY_PATH
