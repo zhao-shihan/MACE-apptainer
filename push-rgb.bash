@@ -45,16 +45,16 @@ auto_retry() {
     fi
 }
 
-auto_retry 99 "apptainer push rgb-tianhe2.sif oras://docker.io/zhaoshh/rgb:tianhe2" &
-auto_retry 99 "apptainer push rgb-tianhe2-mt.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt" &
-auto_retry 99 "apptainer push rgb-tianhe2-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-slim" &
-auto_retry 99 "apptainer push rgb-tianhe2-mt-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim" &
+auto_retry 999 "apptainer push rgb-tianhe2.sif oras://docker.io/zhaoshh/rgb:tianhe2" &
+auto_retry 999 "apptainer push rgb-tianhe2-mt.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt" &
+auto_retry 999 "apptainer push rgb-tianhe2-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-slim" &
+auto_retry 999 "apptainer push rgb-tianhe2-mt-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim" &
 for i in ${isx[@]}; do
     for mpi in mpich openmpi; do
-        auto_retry 99 "apptainer push rgb-$i-$mpi.sif oras://docker.io/zhaoshh/rgb:$i-$mpi" &
-        auto_retry 99 "apptainer push rgb-$i-$mpi-mt.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-mt" &
-        auto_retry 99 "apptainer push rgb-$i-$mpi-slim.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-slim" &
-        auto_retry 99 "apptainer push rgb-$i-$mpi-mt-slim.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-mt-slim" &
+        auto_retry 999 "apptainer push rgb-$i-$mpi.sif oras://docker.io/zhaoshh/rgb:$i-$mpi" &
+        auto_retry 999 "apptainer push rgb-$i-$mpi-mt.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-mt" &
+        auto_retry 999 "apptainer push rgb-$i-$mpi-slim.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-slim" &
+        auto_retry 999 "apptainer push rgb-$i-$mpi-mt-slim.sif oras://docker.io/zhaoshh/rgb:$i-$mpi-mt-slim" &
     done
 done
 wait
