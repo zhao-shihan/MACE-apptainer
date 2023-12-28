@@ -1,11 +1,10 @@
 Bootstrap: localimage
-From: {{RGB}}
+From: rgb-tianhe2.sif
 
 %arguments
-    RGB=
     MACE_SRC=
-    MACE_COMMIT=
     MACE_TIME=
+    MACE_COMMIT=
 
 %files
     {{MACE_SRC}} /opt
@@ -29,4 +28,4 @@ From: {{RGB}}
     export LD_LIBRARY_PATH=/opt/MACE/lib:$LD_LIBRARY_PATH
 
 %labels
-    MACE {{MACE_COMMIT}} ({{MACE_TIME}})
+    MACE {{MACE_TIME}} ({{MACE_COMMIT}})

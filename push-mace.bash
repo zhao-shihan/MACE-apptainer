@@ -1,6 +1,3 @@
-# isx=(avx512vl avx512f avx2 avx sse3)
-isx=(avx2 avx sse3)
-
 success_or_exit() {
     if eval "$1"; then
         >>/dev/null
@@ -13,11 +10,9 @@ success_or_exit "apptainer remote login --username $1 --password $2 oras://docke
 
 apptainer verify mace-tianhe2.sif &
 apptainer verify mace-tianhe2-slim.sif &
-for i in ${isx[@]}; do
-    for mpi in mpich openmpi; do
-        apptainer verify mace-$i-$mpi.sif &
-        apptainer verify mace-$i-$mpi-slim.sif &
-    done
+for mpi in mpich openmpi; do
+    apptainer verify mace-$mpi.sif &
+    apptainer verify mace-$mpi-slim.sif &
 done
 wait
 
@@ -41,14 +36,10 @@ auto_retry() {
     fi
 }
 
-auto_retry 99 "apptainer push mace-tianhe2.sif oras://docker.io/zhaoshh/mace:tianhe2" &
-auto_retry 99 "apptainer push mace-tianhe2-slim.sif oras://docker.io/zhaoshh/mace:tianhe2-slim" &
-for i in ${isx[@]}; do
-    for mpi in mpich openmpi; do
-        auto_retry 99 "apptainer push mace-$i-$mpi.sif oras://docker.io/zhaoshh/mace:$i-$mpi" &
-        auto_retry 99 "apptainer push mace-$i-$mpi-slim.sif oras://docker.io/zhaoshh/mace:$i-$mpi-slim" &
-    done
+auto_retry 999 "apptainer push mace-tianhe2.sif oras://docker.io/zhaoshh/mace:tianhe2" &
+auto_retry 999 "apptainer push mace-tianhe2-slim.sif oras://docker.io/zhaoshh/mace:tianhe2-slim" &
+for mpi in mpich openmpi; do
+    auto_retry 999 "apptainer push mace-$mpi.sif oras://docker.io/zhaoshh/mace:$mpi" &
+    auto_retry 999 "apptainer push mace-$mpi-slim.sif oras://docker.io/zhaoshh/mace:$mpi-slim" &
 done
 wait
-
-apptainer remote logout oras://docker.io

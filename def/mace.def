@@ -6,9 +6,6 @@ From: {{RGB}}
     MACE_SRC=
     MACE_COMMIT=
     MACE_TIME=
-    FLAG0=
-    FLAG1=
-    FLAG2=
 
 %files
     {{MACE_SRC}} /opt
@@ -18,18 +15,74 @@ From: {{RGB}}
     mkdir MACE-build
     mv MACE MACE-build
     cd MACE-build
-    mkdir build
-    cd build
-    cmake -G Ninja ../MACE -DCMAKE_INSTALL_PREFIX=/opt/MACE -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=OFF -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=ON
+
+    MACE_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=OFF -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=ON"
+
+    GEANT4_DIR=/opt/avx2/geant4
+    ROOT_DIR=/opt/avx2/root
+    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
+    export LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+    export MANPATH=$ROOT_DIR/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+    export ROOTSYS=$ROOT_DIR
+    export CLING_STANDARD_PCH=none
+    mkdir build-avx2
+    cd build-avx2
+    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/MACE -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
     ninja
     ninja install
-    cd ../..
+    cd ..
+
+    GEANT4_DIR=/opt/avx/geant4
+    ROOT_DIR=/opt/avx/root
+    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
+    export LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+    export MANPATH=$ROOT_DIR/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+    export ROOTSYS=$ROOT_DIR
+    export CLING_STANDARD_PCH=none
+    mkdir build-avx
+    cd build-avx
+    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/MACE -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
+    ninja
+    ninja install
+    cd ..
+
+    GEANT4_DIR=/opt/sse3/geant4
+    ROOT_DIR=/opt/sse3/root
+    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
+    export LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+    export MANPATH=$ROOT_DIR/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+    export ROOTSYS=$ROOT_DIR
+    export CLING_STANDARD_PCH=none
+    mkdir build-sse3
+    cd build-sse3
+    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/sse3/MACE -DCMAKE_C_FLAGS='-msse3' -DCMAKE_CXX_FLAGS='-msse3'
+    ninja
+    ninja install
+    cd ..
+
+    cd ..
     rm -rf MACE-build
 
 %environment
-    export PATH=/opt/MACE/bin:$PATH
-    export LIBRARY_PATH=/opt/MACE/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/MACE/lib:$LD_LIBRARY_PATH
+    MACE_DIR=/opt/$RUNTIME_CPU_ISX/MACE
+    export PATH=$MACE_DIR/bin:$PATH
+    export LIBRARY_PATH=$MACE_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$MACE_DIR/lib:$LD_LIBRARY_PATH
 
 %labels
-    MACE {{MACE_COMMIT}} ({{MACE_TIME}})
+    MACE {{MACE_TIME}} ({{MACE_COMMIT}})

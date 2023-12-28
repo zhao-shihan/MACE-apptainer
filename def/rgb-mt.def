@@ -3,38 +3,73 @@ From: {{BASE}}
 
 %arguments
     BASE=
-    FLAG0=
-    FLAG1=
-    FLAG2=
 
 %post
     cd /opt
 
-    cd geant4-build/build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON
+    GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON"
+    cd geant4-build
+    mkdir build-avx2
+    cd build-avx2
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/geant4 -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
     ninja
     ninja install
-    cd ../..
+    cd ..
+    mkdir build-avx
+    cd build-avx
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/geant4 -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
+    ninja
+    ninja install
+    cd ..
+    mkdir build-sse3
+    cd build-sse3
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/sse3/geant4 -DCMAKE_C_FLAGS='-msse3' -DCMAKE_CXX_FLAGS='-msse3'
+    ninja
+    ninja install
+    cd ..
+    cd ..
     rm -rf geant4-build
 
-    cd root-build/build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -DCMAKE_CXX_FLAGS='{{FLAG0}} {{FLAG1}} {{FLAG2}}' -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON
+    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON"
+    cd root-build
+    mkdir build-avx2
+    cd build-avx2
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/root -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
     ninja
     ninja install
-    cd ../..
+    cd ..
+    mkdir build-avx
+    cd build-avx
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/root -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
+    ninja
+    ninja install
+    cd ..
+    mkdir build-sse3
+    cd build-sse3
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/sse3/root -DCMAKE_C_FLAGS='-msse3' -DCMAKE_CXX_FLAGS='-msse3'
+    ninja
+    ninja install
+    cd ..
+    cd ..
     rm -rf root-build
 
 %environment
-    export PATH=/opt/geant4/bin:/opt/root/bin:$PATH
-    export LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=/opt/root/lib:$PYTHONPATH
-    export MANPATH=/opt/root/man:$MANPATH
-    export CMAKE_PREFIX_PATH=/opt/geant4:/opt/root:$CMAKE_PREFIX_PATH
-    export JUPYTER_PATH=/opt/root/etc/notebook:$JUPYTER_PATH
-    export JUPYTER_CONFIG_DIR=/opt/root/etc/notebook:$JUPYTER_CONFIG_DIR
-    export ROOTSYS=/opt/root
+    if test -n "$(lscpu | grep Flags | grep avx2)" -a -n "$(lscpu | grep Flags | grep fma)"; then
+        RUNTIME_CPU_ISX=avx2
+    elif test -n "$(lscpu | grep Flags | grep avx)"; then
+        RUNTIME_CPU_ISX=avx
+    else
+        RUNTIME_CPU_ISX=sse3
+    fi
+    GEANT4_DIR=/opt/$RUNTIME_CPU_ISX/geant4
+    ROOT_DIR=/opt/$RUNTIME_CPU_ISX/root
+    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
+    export LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+    export MANPATH=$ROOT_DIR/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+    export ROOTSYS=$ROOT_DIR
     export CLING_STANDARD_PCH=none
-
-%labels
-    Flags {{FLAG0}} {{FLAG1}} {{FLAG2}}

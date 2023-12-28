@@ -1,17 +1,16 @@
-# MACE offline software
+# MACE offline software apptainer container
 
 ## Contents
 
-- [MACE offline software](#mace-offline-software)
+- [MACE offline software apptainer container](#mace-offline-software-apptainer-container)
   - [Contents](#contents)
   - [Quick start](#quick-start)
     - [How to pull](#how-to-pull)
     - [How to run](#how-to-run)
-  - [Note](#note)
-    - [Important note on ISX](#important-note-on-isx)
-    - [Quick guide on ISX](#quick-guide-on-isx)
   - [Pull command list](#pull-command-list)
-  - [Known issues](#known-issues)
+  - [Note](#note)
+    - [SIMD](#simd)
+    - [Quick guide on SIMD](#quick-guide-on-simd)
 
 ## Quick start
 
@@ -19,15 +18,13 @@
 
 **Pull the image by:**
 
-- **`apptainer pull oras://docker.io/zhaoshh/mace:<isx><aux>`**
-- **`<isx>` can be one of the followings: `avx2`, `avx`, `sse3`, and `tianhe2`.**
+- **`apptainer pull oras://docker.io/zhaoshh/mace:<tag><aux>`**
+- **`<tag>` can be one of the followings: `mpich`, `openmpi`, and `tianhe2`.**
 - **`<aux>` can be nothing or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables).**
 
-For example, `apptainer pull oras://docker.io/zhaoshh/mace:avx2` pulls down an image compiled with avx2 ISX, `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim` pulls down an image specialized for Tianhe-2 and does not contain Geant4 data.
+For example, `apptainer pull oras://docker.io/zhaoshh/mace:mpich` pulls down an image that MPI library is MPICH, `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim` pulls down an image specialized for Tianhe-2 and does not contain Geant4 data.
 
-If you need a general-purposed image, and have no idea about CPU instruction sets, and you are not using an ancient computer (within 10 years), it is recommended to pull `avx2`:
-
-- `apptainer pull oras://docker.io/zhaoshh/mace:avx2`
+**You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to run do correct parallel computing.** 
 
 If you are going to run the image on Tianhe-2 supercomputer, here is a specialization:
 
@@ -58,32 +55,26 @@ Common build tools like GCC, CMake, and Ninja are also provided:
 
 Other usage should be the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
 
-## Note
-
-### Important note on ISX
-
-- **Select `<isx>` to the furthest extent that your CPU architecture supported can maximize performance, but do not use incompatible `<isx>` otherwise it will crash into `SIGILL` (Illegal Instruction)!**
-
-- Use `lscpu` to view instruction sets available on your CPU. Its `Flags:` item will list all available instruction sets.
-
-### Quick guide on ISX
-
-- **`mace:avx2`** should be compatible to **x86-64 CPUs after 2015**: Intel CPU posterior to "Haswell" (posterior to Core i7-4XXX, Xeon E5-XXXX v3, etc.), AMD CPU posterior to "Bulldozer Gen4 (Excavator)". Compiled with `-mavx2 -mfma`.
-- **`mace:avx`** should be compatible to **x86-64 CPUs after 2013**: Intel CPU posterior to "Sandy Bridge" (posterior to Core i7-2XXX, Xeon E5-XXXX, etc.), AMD CPU posterior to "Bulldozer Gen1". Compiled with `-mavx`.
-- **`mace:sse3`** should be compatible to **x86-64 CPUs after 2006**: Intel CPU posterior to "Prescott" (posterior to Pentium 4, Celeron D etc.), AMD CPU posterior to "Athlon 64". Compiled with `-msse3`.
-- **`mace:tianhe2`** is specialized for Intel "Ivy Bridge" architecture (used by **Tianhe-2 supercomputer**), and its content is specialized for its typical usage. Compiled with `-march=ivybridge`.
-
 ## Pull command list
 
-- `apptainer pull oras://docker.io/zhaoshh/mace:avx2`
-- `apptainer pull oras://docker.io/zhaoshh/mace:avx2-slim`
-- `apptainer pull oras://docker.io/zhaoshh/mace:avx`
-- `apptainer pull oras://docker.io/zhaoshh/mace:avx-slim`
-- `apptainer pull oras://docker.io/zhaoshh/mace:sse3`
-- `apptainer pull oras://docker.io/zhaoshh/mace:sse3-slim`
+- `apptainer pull oras://docker.io/zhaoshh/mace:mpich`
+- `apptainer pull oras://docker.io/zhaoshh/mace:mpich-slim`
+- `apptainer pull oras://docker.io/zhaoshh/mace:openmpi`
+- `apptainer pull oras://docker.io/zhaoshh/mace:openmpi-slim`
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2`
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim`
 
-## Known issues
+## Note
 
-- Stacktrace is currently not available (it will crash into bus error).
+### SIMD
+
+SIMD support is automatically enable at runtime, by detecting the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
+It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on almost all machines.
+
+For Tianhe-2 specialization the adaptive SIMD is not enabled and only one implementation compiled with `-march=ivybridge` is contained in the container.
+
+### Quick guide on SIMD
+
+- **AVX2 and FMA** should be available on **x86-64 CPUs after 2015**: Intel CPU posterior to "Haswell" (posterior to Core i7-4XXX, Xeon E5-XXXX v3, etc.), AMD CPU posterior to "Bulldozer Gen4 (Excavator)". Compiled with `-mavx2 -mfma`.
+- **AVX** should be available on **x86-64 CPUs after 2013**: Intel CPU posterior to "Sandy Bridge" (posterior to Core i7-2XXX, Xeon E5-XXXX, etc.), AMD CPU posterior to "Bulldozer Gen1". Compiled with `-mavx`.
+- **SSE3** should be available on **x86-64 CPUs after 2006**: Intel CPU posterior to "Prescott" (posterior to Pentium 4, Celeron D etc.), AMD CPU posterior to "Athlon 64". Compiled with `-msse3`.

@@ -1,8 +1,8 @@
 Bootstrap: localimage
-From: {{RGB}}
+From: {{FROM}}
 
 %arguments
-    RGB=
+    FROM=
 
 %post
     rm -rf /opt/geant4-data

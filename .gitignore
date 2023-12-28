@@ -1,6 +1,7 @@
-*.sif
 .token
+*.sif
 *.out
+*.old
 MACE/
 old/
 tmp/
