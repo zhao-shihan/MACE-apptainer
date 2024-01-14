@@ -5,7 +5,9 @@ From: rgb-base.sif
     MPICH_VERSION=4.1.2
 
 %post
-    apt -y install libhwloc-dev
+    apt -y update
+    apt -y upgrade
+    apt -y install libglu1-mesa-dev libglew-dev libftgl-dev libafterimage-dev qt3d5-dev libxmu-dev qtwebengine5-dev
     apt -y autopurge
     apt clean
 
@@ -16,7 +18,8 @@ From: rgb-base.sif
     tar -xf mpich.tar.gz
     mkdir build
     cd build
-    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-g --enable-fast=O3,ndebug --enable-romio --disable-cxx --disable-fortran --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-hwloc=/usr
+    # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --disable-error-checking --enable-tag-error-bits=yes --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
     make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
     make install
     cd ../..

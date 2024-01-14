@@ -5,7 +5,8 @@ From: {{BASE}}
     BASE=
 
 %post
-    apt -y purge libtbb-dev
+    apt -y update
+    apt -y upgrade
     apt -y autopurge
     apt clean
 

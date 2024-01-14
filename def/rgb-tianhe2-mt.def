@@ -1,8 +1,10 @@
 Bootstrap: localimage
-From: rgb-mpich-base.sif
+From: rgb-tianhe2-base.sif
 
 %post
-    apt -y purge libglu1-mesa-dev libglew-dev libftgl-dev libafterimage-dev qt3d5-dev libxmu-dev qtwebengine5-dev
+    apt -y update
+    apt -y upgrade
+    apt -y install libtbb-dev
     apt -y autopurge
     apt clean
 

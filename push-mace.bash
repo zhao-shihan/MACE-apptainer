@@ -43,3 +43,4 @@ for mpi in mpich openmpi; do
     auto_retry 999 "apptainer push mace-$mpi-slim.sif oras://docker.io/zhaoshh/mace:$mpi-slim" &
 done
 wait
+# auto_retry 999 "apptainer push mace-mpich.sif oras://docker.io/zhaoshh/mace:latest"

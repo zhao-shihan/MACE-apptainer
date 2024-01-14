@@ -9,7 +9,7 @@
     - [How to run](#how-to-run)
   - [Pull command list](#pull-command-list)
   - [Note](#note)
-    - [SIMD](#simd)
+    - [About SIMD](#about-simd)
     - [Quick guide on SIMD](#quick-guide-on-simd)
 
 ## Quick start
@@ -41,10 +41,10 @@ You can run MACE simulation by `apptainer run`:
 - `apptainer run rgb.sif SimTarget`
 - `apptainer run rgb.sif SimEMC`
 
-and it should show the SimMACE interface.
+and it should show the program interface.
 This image is built based on [RGB](https://hub.docker.com/r/zhaoshh/rgb), so **single-threaded** ROOT and Geant4 are also contained in this image, check them by
 
-- `apptainer run rgb.sif root`
+- `apptainer run rgb.sif root` (or `apptainer run rgb.sif root.exe` for Tianhe-2 version)
 - `apptainer run rgb.sif geant4-config --version`
 
 Common build tools like GCC, CMake, and Ninja are also provided:
@@ -66,7 +66,7 @@ Other usage should be the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
 
 ## Note
 
-### SIMD
+### About SIMD
 
 SIMD support is automatically enable at runtime, by detecting the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
 It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on almost all machines.

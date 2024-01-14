@@ -12,7 +12,7 @@
       - [Compile and run applications directly](#compile-and-run-applications-directly)
   - [Pull command list](#pull-command-list)
   - [Note](#note)
-    - [SIMD](#simd)
+    - [About SIMD](#about-simd)
     - [Quick guide on SIMD](#quick-guide-on-simd)
 
 ## Quick start
@@ -81,7 +81,7 @@ Another way you can do is compiling some applications that depends on ROOT/Geant
 
 - Configure: `apptainer run rgb.sif cmake -G Ninja path/to/src`
 - Build: `apptainer run rgb.sif ninja`
-- Run: first run `apptainer shell rgb.sif`, and run the program inside the apptainer shell.
+- Run: `apptainer run rgb.sif path/to/your/app`
 
 ## Pull command list
 
@@ -100,7 +100,7 @@ Another way you can do is compiling some applications that depends on ROOT/Geant
 
 ## Note
 
-### SIMD
+### About SIMD
 
 SIMD support is automatically enable at runtime, by detecting the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
 It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on almost all machines.

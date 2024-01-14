@@ -2,6 +2,9 @@ Bootstrap: localimage
 From: rgb-base.sif
 
 %post
+    apt -y update
+    apt -y upgrade
+    apt -y install libglu1-mesa-dev libglew-dev libftgl-dev libafterimage-dev qt3d5-dev libxmu-dev qtwebengine5-dev
     apt -y install libopenmpi-dev
     apt -y autopurge
     apt clean

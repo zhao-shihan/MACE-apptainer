@@ -51,3 +51,4 @@ for mpi in mpich openmpi; do
     auto_retry 999 "apptainer push rgb-$mpi-mt-slim.sif oras://docker.io/zhaoshh/rgb:$mpi-mt-slim" &
 done
 wait
+# auto_retry 999 "apptainer push rgb-mpich-mt.sif oras://docker.io/zhaoshh/rgb:latest"
