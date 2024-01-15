@@ -6,10 +6,12 @@
   - [Contents](#contents)
   - [Quick start](#quick-start)
     - [How to pull](#how-to-pull)
-    - [How to use the container](#how-to-use-the-container)
-      - [Image content](#image-content)
-      - [Build your own container](#build-your-own-container)
-      - [Compile and run applications directly](#compile-and-run-applications-directly)
+    - [How to run](#how-to-run)
+      - [Simple usage](#simple-usage)
+      - [Recommended usage](#recommended-usage)
+    - [Container contents](#container-contents)
+    - [Build your own container](#build-your-own-container)
+    - [Build and run your own apps](#build-and-run-your-own-apps)
   - [Pull command list](#pull-command-list)
   - [Note](#note)
     - [About SIMD](#about-simd)
@@ -23,11 +25,17 @@
 
 - **`apptainer pull oras://docker.io/zhaoshh/rgb:<tag><aux>`**
 - **`<tag>` can be one of the followings: `mpich`, `openmpi`, and `tianhe2`.**
-- **`<aux>` can be nothing or `-mt` (for multi-threaded G4 and ROOT) or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables) or `-mt-slim`.**
+- **`<aux>` can be nothing or `-mt` (for multi-threaded G4 and ROOT) or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables) or `-mt-slim` (combines the two).**
 
-For example, `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt` pulls down an container that MPI library is MPICH and G4 and ROOT multi-threading enabled, `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim` pulls down an container specialized for Tianhe-2 and contains single-threaded G4 and ROOT (parallel computing is support by MPI).
+For example, `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt` pulls down an container that MPI library is MPICH, and G4 and ROOT are multi-threading enabled, `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim` pulls down an container specialized for Tianhe-2 and contains single-threaded G4 and ROOT (parallel computing is support by MPI).
 
-**You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to do correct parallel computing.** 
+**You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to do parallel computation correctly.** 
+
+If you don't care about MPI and just want a multi-purpose container , then
+
+- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt`
+
+should be good enough.
 
 If you are going to run the container on Tianhe-2 supercomputer, here is a specialization:
 
@@ -35,53 +43,87 @@ If you are going to run the container on Tianhe-2 supercomputer, here is a speci
 
 or with `-mt` or `-slim` or `-mt-slim`, up to your purpose.
 
-### How to use the container
+Available pull commands are listed in the following section.
 
-#### Image content
+### How to run
 
-The container contains ROOT and Geant4 libraries, you can use ROOT directly by `apptainer run`:
+#### Simple usage
 
-- `apptainer run rgb.sif root`
+The container contains ROOT and Geant4 libraries, you can use applications (r.g. `root`) directly by
 
-and it should show the ROOT interface. Other ROOT utilities are also available, for example
+- `apptainer run rgb.sif root` (or `apptainer run rgb.sif root` for Tianhe-2 specialization), or simply
+- `./rgb.sif root`, after executed `chmod +x rgb.sif`
 
-- `apptainer run rgb.sif hadd`
-- `apptainer run rgb.sif rootcling`
+and it should show the ROOT interface. 
+
+#### Recommended usage
+
+However, in some cases you may want to use the container from everywhere on you machine.
+A recommended usage is to make the container executable and add it to `PATH`.
+
+First, make the container executable by
+
+- `chmod +x rgb.sif`
+
+Then, copy/move the container to an installation directory (e.g. `path/to/install`), and (optionally) shorten its name (e.g. `rgb`) by
+
+- `mv rgb.sif path/to/install/rgb`
+
+After that, add the following line in e.g. `~/.bashrc`:
+
+- `export PATH=path/to/install:$PATH`
+
+This line adds the RGB container directory into the `PATH`.
+After restarted the terminal/session, you can use the container by entering `rgb` directly:
+
+- `rgb root` (or `rgb root.exe` for Tianhe-2 specialization)
+  
+and it should show the ROOT interface.
+
+**In the remaining part, we assume that the container is used in this way, but you can always switch to the form of `apptainer run`.**
+
+### Container contents
+
+ROOT utilities are available, for example
+
+- `rgb root` (`root.exe` for Tianhe-2 specialization)
+- `rgb hadd`
+- `rgb rootcling`
 
 You can also check the Geant4 version or complie flags:
 
-- `apptainer run rgb.sif geant4-config --version`
-- `apptainer run rgb.sif geant4-config --cflags`
+- `rgb geant4-config --version`
+- `rgb geant4-config --cflags`
 
 RGB is a basic library container, and it can be used to compile programs depending on ROOT and/or Geant4.
 So it provides common build tools like GCC, CMake, and Ninja:
 
-- `apptainer run rgb.sif g++ --version`
-- `apptainer run rgb.sif cmake --version`
-- `apptainer run rgb.sif ninja --version`
+- `rgb g++ --version`
+- `rgb cmake --version`
+- `rgb ninja --version`
 
 There are many other packages pre-installed in the container.
 Except for ROOT and Geant4, you can check all APT-installed packages:
 
-- `apptainer run rgb.sif apt list`
+- `rgb apt list`
 
 or list something specific:
 
-- `apptainer run rgb.sif apt list libgsl-dev`
+- `rgb apt list libgsl-dev`
 
-#### Build your own container
+### Build your own container
 
-You can also write your own [container definition file](https://apptainer.org/docs/user/latest/definition_files.html) and build your own container based on RGB.
+You can also write your own [apptainer definition file](https://apptainer.org/docs/user/latest/definition_files.html) and build your own container based on RGB.
 This makes use of ROOT and Geant4 installed in RGB, and saves time from compiling them.
-Check [https://apptainer.org/docs/user/latest/build_a_container.html]() for more informations.
+Check [https://apptainer.org/docs/user/latest/build_a_container.html]() for more.
 
-#### Compile and run applications directly
+### Build and run your own apps
 
-Another way you can do is compiling some applications that depends on ROOT/Geant4 with the container, and run in it:
+You can also compile your favorite applications that depend on ROOT/Geant4 with RGB, and run with it:
 
-- Configure: `apptainer run rgb.sif cmake -G Ninja path/to/src`
-- Build: `apptainer run rgb.sif ninja`
-- Run: `apptainer run rgb.sif path/to/your/app`
+- Configure: `rgb cmake -G Ninja path/to/src`
+- Build: `rgb ninja`
+- Run: `rgb path/to/your/app`
 
 ## Pull command list
 
@@ -102,8 +144,8 @@ Another way you can do is compiling some applications that depends on ROOT/Geant
 
 ### About SIMD
 
-SIMD support is automatically enable at runtime, by detecting the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
-It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on almost all machines.
+SIMD support is enabled and auto-detected at runtime, by probing the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
+It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on all machines, except for those ancient relics.
 
 For Tianhe-2 specialization the adaptive SIMD is not enabled and only one implementation compiled with `-march=ivybridge` is contained in the container.
 

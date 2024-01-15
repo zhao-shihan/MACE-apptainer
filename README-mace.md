@@ -7,6 +7,10 @@
   - [Quick start](#quick-start)
     - [How to pull](#how-to-pull)
     - [How to run](#how-to-run)
+      - [Simple usage](#simple-usage)
+      - [Recommended usage](#recommended-usage)
+    - [Container contents](#container-contents)
+    - [Other usage](#other-usage)
   - [Pull command list](#pull-command-list)
   - [Note](#note)
     - [About SIMD](#about-simd)
@@ -24,7 +28,7 @@
 
 For example, `apptainer pull oras://docker.io/zhaoshh/mace:mpich` pulls down an image that MPI library is MPICH, `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim` pulls down an image specialized for Tianhe-2 and does not contain Geant4 data.
 
-**You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to run do correct parallel computing.** 
+**You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to do parallel computation correctly.** 
 
 If you are going to run the image on Tianhe-2 supercomputer, here is a specialization:
 
@@ -34,26 +38,71 @@ or with `-slim`, up to your purpose.
 
 ### How to run
 
-The image contains MACE and its dependencies (including ROOT and Geant4 libraries).
-You can run MACE simulation by `apptainer run`:
+#### Simple usage
 
-- `apptainer run rgb.sif SimMACE`
-- `apptainer run rgb.sif SimTarget`
-- `apptainer run rgb.sif SimEMC`
+The container contains MACE offline software and its dependencies (including ROOT and Geant4 libraries).
+You can run MACE simulation by
+
+- `apptainer run mace.sif SimMACE`
+- `apptainer run mace.sif SimTarget`
+- `apptainer run mace.sif SimEMC`
+
+Or, after executed `chmod +x mace.sif`, simply
+
+- `./mace.sif SimMACE`
+- `./mace.sif SimTarget`
+- `./mace.sif SimEMC`
 
 and it should show the program interface.
-This image is built based on [RGB](https://hub.docker.com/r/zhaoshh/rgb), so **single-threaded** ROOT and Geant4 are also contained in this image, check them by
 
-- `apptainer run rgb.sif root` (or `apptainer run rgb.sif root.exe` for Tianhe-2 version)
-- `apptainer run rgb.sif geant4-config --version`
+#### Recommended usage
+
+However, in some cases you may want to use the container from everywhere on you machine.
+A recommended usage is to make the container executable and add it to `PATH`.
+
+First, make the container executable by
+
+- `chmod +x mace.sif`
+
+Then, copy/move the container to an installation directory (e.g. `path/to/install`), and (optionally) shorten its name (e.g. `mace`) by
+
+- `mv mace.sif path/to/install/mace`
+
+After that, add the following line in e.g. `~/.bashrc`:
+
+- `export PATH=path/to/install:$PATH`
+
+This line adds the container directory into the `PATH`.
+After restarted the terminal/session, you can use the container by entering `mace` directly:
+
+- `mace SimMACE`
+  
+and it should show the program interface.
+
+**In the remaining part, we assume that the container is used in this way, but you can always switch to the form of `apptainer run`.**
+
+### Container contents
+
+The container contains MACE offline software and its dependencies:
+
+- `mace SimMACE`
+- `mace SimTarget`
+- `mace SimEMC`
+
+This container is built upon [RGB](https://hub.docker.com/r/zhaoshh/rgb), so **single-threaded** ROOT and Geant4 are also contained in this container, check them by
+
+- `mace root` (or `mace root.exe` for Tianhe-2 specialization)
+- `mace geant4-config --version`
 
 Common build tools like GCC, CMake, and Ninja are also provided:
 
-- `apptainer run rgb.sif g++ --version`
-- `apptainer run rgb.sif cmake --version`
-- `apptainer run rgb.sif ninja --version`
+- `mace g++ --version`
+- `mace cmake --version`
+- `mace ninja --version`
 
-Other usage should be the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
+### Other usage
+
+Other usage should be essentially the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
 
 ## Pull command list
 
@@ -68,8 +117,8 @@ Other usage should be the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
 
 ### About SIMD
 
-SIMD support is automatically enable at runtime, by detecting the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
-It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on almost all machines.
+SIMD support is enabled and auto-detected at runtime, by probing the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2 and FMA (implementation installed in /opt/avx2), AVX (implementation installed in /opt/avx) and SSE3 (implementation installed in /opt/sse3).
+It will automatically choose the most advanced SIMD instruction set available on your machine. SSE3 should be available on all machines, except for those ancient relics.
 
 For Tianhe-2 specialization the adaptive SIMD is not enabled and only one implementation compiled with `-march=ivybridge` is contained in the container.
 
