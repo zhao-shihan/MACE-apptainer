@@ -13,7 +13,7 @@ From: {{BASE}}
 
     cd /opt
 
-    GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON"
+    GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON"
     cd geant4-build
     mkdir build-avx2
     cd build-avx2
@@ -27,16 +27,10 @@ From: {{BASE}}
     ninja
     ninja install
     cd ..
-    mkdir build-sse3
-    cd build-sse3
-    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/sse3/geant4 -DCMAKE_C_FLAGS='-msse3' -DCMAKE_CXX_FLAGS='-msse3'
-    ninja
-    ninja install
-    cd ..
     cd ..
     rm -rf geant4-build
 
-    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=release -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON"
+    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON"
     cd root-build
     mkdir build-avx2
     cd build-avx2
@@ -50,12 +44,6 @@ From: {{BASE}}
     ninja
     ninja install
     cd ..
-    mkdir build-sse3
-    cd build-sse3
-    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/sse3/root -DCMAKE_C_FLAGS='-msse3' -DCMAKE_CXX_FLAGS='-msse3'
-    ninja
-    ninja install
-    cd ..
     cd ..
     rm -rf root-build
 
@@ -65,7 +53,8 @@ From: {{BASE}}
     elif test -n "$(lscpu | grep Flags | grep avx)"; then
         RUNTIME_CPU_ISX=avx
     else
-        RUNTIME_CPU_ISX=sse3
+        echo "Warning: It seems that even AVX is not available. Try another machine if you cannot run."
+        RUNTIME_CPU_ISX=avx
     fi
     GEANT4_DIR=/opt/$RUNTIME_CPU_ISX/geant4
     ROOT_DIR=/opt/$RUNTIME_CPU_ISX/root
