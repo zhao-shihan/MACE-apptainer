@@ -1,7 +1,8 @@
 .token
-*.sif
-*.out
+*.log
 *.old
+*.out
+*.sif
 MACE/
 old/
 tmp/

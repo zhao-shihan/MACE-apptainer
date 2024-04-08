@@ -21,7 +21,7 @@ From: rgb-tianhe2-base.sif
     cd root-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dunuran=ON -During=ON -Dx11=OFF
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dunuran=OFF -During=ON -Dx11=OFF
     ninja
     ninja install
     cd ../..
