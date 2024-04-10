@@ -13,57 +13,100 @@ From: {{BASE}}
 
     cd /opt
 
-    GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON"
-    cd geant4-build
+    VECGEOM_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON"
+    cd vecgeom-build
+
     mkdir build-avx2
     cd build-avx2
-    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/geant4 -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
+    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/vecgeom -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVECGEOM_VECTOR=avx2 -DVc_IMPL=AVX2
     ninja
     ninja install
     cd ..
+
     mkdir build-avx
     cd build-avx
-    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/geant4 -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
+    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/vecgeom -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVECGEOM_VECTOR=avx -DVc_IMPL=AVX
+    ninja
+    ninja install
+    cd ..
+
+    cd ..
+    rm -rf vecgeom-build
+
+    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=OFF -During=ON -Dvecgeom=ON"
+    cd root-build
+
+    VECGEOM_DIR=/opt/avx2/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+    mkdir build-avx2
+    cd build-avx2
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/root -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVc_IMPL=AVX2
+    ninja
+    ninja install
+    cd ..
+
+    VECGEOM_DIR=/opt/avx/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+    mkdir build-avx
+    cd build-avx
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/root -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVc_IMPL=AVX
+    ninja
+    ninja install
+    cd ..
+
+    cd ..
+    rm -rf root-build
+
+    GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_USE_TBB=ON -DGEANT4_USE_USOLIDS=ON"
+    cd geant4-build
+
+    VECGEOM_DIR=/opt/avx2/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+    mkdir build-avx2
+    cd build-avx2
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/geant4 -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVc_IMPL=AVX2
+    ninja
+    ninja install
+    cd ..
+
+    VECGEOM_DIR=/opt/avx/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+    mkdir build-avx
+    cd build-avx
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/geant4 -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVc_IMPL=AVX
     ninja
     ninja install
     cd ..
     cd ..
     rm -rf geant4-build
 
-    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=OFF -During=ON"
-    cd root-build
-    mkdir build-avx2
-    cd build-avx2
-    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/root -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
-    ninja
-    ninja install
-    cd ..
-    mkdir build-avx
-    cd build-avx
-    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/root -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
-    ninja
-    ninja install
-    cd ..
-    cd ..
-    rm -rf root-build
-
 %environment
-    if test -n "$(lscpu | grep Flags | grep avx2)" -a -n "$(lscpu | grep Flags | grep fma)"; then
+    if test -n "$(cat /proc/cpuinfo | grep flags | grep avx2)" -a -n "$(cat /proc/cpuinfo | grep flags | grep fma)"; then
         RUNTIME_CPU_ISX=avx2
-    elif test -n "$(lscpu | grep Flags | grep avx)"; then
+    elif test -n "$(cat /proc/cpuinfo | grep flags | grep avx)"; then
         RUNTIME_CPU_ISX=avx
     else
         echo "Warning: It seems that even AVX is not available. Try another machine if you cannot run."
         RUNTIME_CPU_ISX=avx
     fi
+
+    VECGEOM_DIR=/opt/$RUNTIME_CPU_ISX/vecgeom
     GEANT4_DIR=/opt/$RUNTIME_CPU_ISX/geant4
     ROOT_DIR=/opt/$RUNTIME_CPU_ISX/root
     export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
-    export LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
     export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
     export MANPATH=$ROOT_DIR/man:$MANPATH
-    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
     export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
     export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
     export ROOTSYS=$ROOT_DIR

@@ -9,31 +9,45 @@ From: rgb-tianhe2-base.sif
 
     cd /opt
 
-    cd geant4-build
+    cd vecgeom-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DGEANT4_BUILD_MULTITHREADED=OFF -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_EXAMPLES=OFF -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/vecgeom -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DVECGEOM_VECTOR=avx -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON -DVc_IMPL=AVX
     ninja
     ninja install
     cd ../..
-    rm -rf geant4-build
+    rm -rf vecgeom-build
+
+    VECGEOM_DIR=/opt/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
 
     cd root-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dunuran=OFF -During=ON -Dx11=OFF
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dunuran=OFF -During=ON -Dvecgeom=ON -Dx11=OFF -DVc_IMPL=AVX
     ninja
     ninja install
     cd ../..
     rm -rf root-build
 
+    cd geant4-build
+    mkdir build
+    cd build
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DGEANT4_BUILD_MULTITHREADED=OFF -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_EXAMPLES=OFF -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF -DGEANT4_USE_USOLIDS=ON -DVc_IMPL=AVX
+    ninja
+    ninja install
+    cd ../..
+    rm -rf geant4-build
+
 %environment
     export PATH=/opt/geant4/bin:/opt/root/bin:$PATH
-    export LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH
+    export LIBRARY_PATH=/opt/vecgeom:/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=/opt/vecgeom:/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH
     export PYTHONPATH=/opt/root/lib:$PYTHONPATH
     export MANPATH=/opt/root/man:$MANPATH
-    export CMAKE_PREFIX_PATH=/opt/geant4:/opt/root:$CMAKE_PREFIX_PATH
+    export CMAKE_PREFIX_PATH=/opt/vecgeom:/opt/geant4:/opt/root:$CMAKE_PREFIX_PATH
     export JUPYTER_PATH=/opt/root/etc/notebook:$JUPYTER_PATH
     export JUPYTER_CONFIG_DIR=/opt/root/etc/notebook:$JUPYTER_CONFIG_DIR
     export ROOTSYS=/opt/root

@@ -14,12 +14,12 @@ From: rgb-base.sif
     cd /opt
     mkdir mpich-build
     cd mpich-build
-    wget -c -t=99 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
+    wget -c -t=999 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
     tar -xf mpich.tar.gz
     mkdir build
     cd build
     # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits=yes --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
-    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --disable-error-checking --enable-tag-error-bits=yes --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --disable-error-checking --enable-tag-error-bits=yes --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS='-O3 -DNDEBUG'
     make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
     make install
     cd ../..

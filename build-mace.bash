@@ -4,7 +4,7 @@ MACE_TIME=$(git show --pretty=format:'%cI' | head -1)
 cd ..
 
 apptainer build \
-    --build-arg MACE_SRC="$(pwd)/MACE" \
+    --build-arg MACE_SRC_HOST_DIR="$(pwd)/MACE" \
     --build-arg MACE_COMMIT=$MACE_COMMIT \
     --build-arg MACE_TIME=$MACE_TIME \
     mace-tianhe2.sif \
@@ -16,7 +16,7 @@ apptainer build \
 for mpi in mpich openmpi; do
     apptainer build \
         --build-arg RGB=rgb-$mpi.sif \
-        --build-arg MACE_SRC="$(pwd)/MACE" \
+        --build-arg MACE_SRC_HOST_DIR="$(pwd)/MACE" \
         --build-arg MACE_COMMIT=$MACE_COMMIT \
         --build-arg MACE_TIME=$MACE_TIME \
         mace-$mpi.sif \

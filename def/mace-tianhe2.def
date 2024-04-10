@@ -2,12 +2,12 @@ Bootstrap: localimage
 From: rgb-tianhe2.sif
 
 %arguments
-    MACE_SRC=
+    MACE_SRC_HOST_DIR=
     MACE_TIME=
     MACE_COMMIT=
 
 %files
-    {{MACE_SRC}} /opt
+    {{MACE_SRC_HOST_DIR}} /opt
 
 %post
     cd /opt
@@ -26,6 +26,7 @@ From: rgb-tianhe2.sif
     export PATH=/opt/MACE/bin:$PATH
     export LIBRARY_PATH=/opt/MACE/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=/opt/MACE/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=/opt/MACE:$CMAKE_PREFIX_PATH
 
 %labels
     MACE {{MACE_TIME}} ({{MACE_COMMIT}})

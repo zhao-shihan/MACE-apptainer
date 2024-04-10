@@ -1,4 +1,5 @@
 apptainer build \
+    --build-arg G4DATA_ARCHIVE_HOST_DIR="$(pwd)/g4data" \
     rgb-base.sif \
     def/rgb-base.def
 apptainer build \
