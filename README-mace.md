@@ -12,9 +12,8 @@
     - [Container contents](#container-contents)
     - [Other usage](#other-usage)
   - [Pull command list](#pull-command-list)
-  - [Note](#note)
+  - [Notice](#notice)
     - [About SIMD](#about-simd)
-    - [Quick guide on SIMD](#quick-guide-on-simd)
 
 ## Quick start
 
@@ -113,16 +112,11 @@ Other usage should be essentially the same as [RGB](https://hub.docker.com/r/zha
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2`
 - `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim`
 
-## Note
+## Notice
 
 ### About SIMD
 
-SIMD support is enabled and auto-detected at runtime, by probing the host CPU micro-architecture. Supported SIMD instruction sets includes AVX2+FMA (binaries in /opt/avx2) and AVX (binaries in /opt/avx).
-It will automatically choose the most advanced SIMD instruction set available on your machine. AVX should be available on almost all amd64 machines, except for those ancient relics.
+SIMD support is enabled and auto-detected at runtime, by probing the host CPU features. Supported instruction sets includes x86-64-v3 (up to AVX2, AVX, FMA, etc., binaries in /opt/x86-64-v3) and x86-64-v2 (up to SSE4.2, SSSE3, SSE3, etc., binaries in /opt/x86-64-v2).
+It will automatically choose the most advanced instruction sets available on your machine. x86-64-v2 should be available on almost all amd64 machines, except for you grandpa's.
 
 For Tianhe-2 specialization the adaptive SIMD is not enabled and only one implementation compiled with `-march=ivybridge` is contained in the container.
-
-### Quick guide on SIMD
-
-- **AVX2 and FMA** should be available on **x86-64 CPUs after 2015**: Intel CPU posterior to "Haswell" (posterior to Core i7-4XXX, Xeon E5-XXXX v3, etc.), AMD CPU posterior to "Bulldozer Gen4 (Excavator)". Compiled with `-mavx2 -mfma`.
-- **AVX** should be available on **x86-64 CPUs after 2013**: Intel CPU posterior to "Sandy Bridge" (posterior to Core i7-2XXX, Xeon E5-XXXX, etc.), AMD CPU posterior to "Bulldozer Gen1". Compiled with `-mavx`.

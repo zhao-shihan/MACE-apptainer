@@ -18,9 +18,9 @@ From: {{RGB}}
 
     MACE_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=OFF -DMACE_ENABLE_UNITY_BUILD=ON -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=ON"
 
-    VECGEOM_DIR=/opt/avx2/vecgeom
-    GEANT4_DIR=/opt/avx2/geant4
-    ROOT_DIR=/opt/avx2/root
+    VECGEOM_DIR=/opt/x86-64-v3/vecgeom
+    GEANT4_DIR=/opt/x86-64-v3/geant4
+    ROOT_DIR=/opt/x86-64-v3/root
     export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
@@ -31,16 +31,16 @@ From: {{RGB}}
     export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
     export ROOTSYS=$ROOT_DIR
     export CLING_STANDARD_PCH=none
-    mkdir build-avx2
-    cd build-avx2
-    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/MACE -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma'
+    mkdir build-x86-64-v3
+    cd build-x86-64-v3
+    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/MACE -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DTARGET_ARCHITECTURE=x86-64-v3
     ninja
     ninja install
     cd ..
 
-    VECGEOM_DIR=/opt/avx/vecgeom
-    GEANT4_DIR=/opt/avx/geant4
-    ROOT_DIR=/opt/avx/root
+    VECGEOM_DIR=/opt/x86-64-v2/vecgeom
+    GEANT4_DIR=/opt/x86-64-v2/geant4
+    ROOT_DIR=/opt/x86-64-v2/root
     export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
@@ -51,9 +51,9 @@ From: {{RGB}}
     export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
     export ROOTSYS=$ROOT_DIR
     export CLING_STANDARD_PCH=none
-    mkdir build-avx
-    cd build-avx
-    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/MACE -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx'
+    mkdir build-x86-64-v2
+    cd build-x86-64-v2
+    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v2/MACE -DCMAKE_C_FLAGS='-march=x86-64-v2' -DCMAKE_CXX_FLAGS='-march=x86-64-v2' -DTARGET_ARCHITECTURE=x86-64-v2
     ninja
     ninja install
     cd ..
@@ -62,7 +62,7 @@ From: {{RGB}}
     rm -rf MACE-build
 
 %environment
-    MACE_DIR=/opt/$RUNTIME_CPU_ISX/MACE
+    MACE_DIR=/opt/$RUNTIME_CPU_ARCH/MACE
     export PATH=$MACE_DIR/bin:$PATH
     export LIBRARY_PATH=$MACE_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$MACE_DIR/lib:$LD_LIBRARY_PATH

@@ -16,16 +16,16 @@ From: {{BASE}}
     VECGEOM_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON"
     cd vecgeom-build
 
-    mkdir build-avx2
-    cd build-avx2
-    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/vecgeom -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVECGEOM_VECTOR=avx2 -DVc_IMPL=AVX2
+    mkdir build-x86-64-v3
+    cd build-x86-64-v3
+    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/vecgeom -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DVECGEOM_VECTOR=avx2 -DTARGET_ARCHITECTURE=x86-64-v3
     ninja
     ninja install
     cd ..
 
-    mkdir build-avx
-    cd build-avx
-    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/vecgeom -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVECGEOM_VECTOR=avx -DVc_IMPL=AVX
+    mkdir build-x86-64-v2
+    cd build-x86-64-v2
+    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v2/vecgeom -DCMAKE_C_FLAGS='-march=x86-64-v2' -DCMAKE_CXX_FLAGS='-march=x86-64-v2' -DVECGEOM_VECTOR=sse4.2 -DTARGET_ARCHITECTURE=x86-64-v2
     ninja
     ninja install
     cd ..
@@ -36,24 +36,24 @@ From: {{BASE}}
     ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=OFF -During=ON -Dvecgeom=ON"
     cd root-build
 
-    VECGEOM_DIR=/opt/avx2/vecgeom
+    VECGEOM_DIR=/opt/x86-64-v3/vecgeom
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
     export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
-    mkdir build-avx2
-    cd build-avx2
-    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/root -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVc_IMPL=AVX2
+    mkdir build-x86-64-v3
+    cd build-x86-64-v3
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/root -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DTARGET_ARCHITECTURE=x86-64-v3
     ninja
     ninja install
     cd ..
 
-    VECGEOM_DIR=/opt/avx/vecgeom
+    VECGEOM_DIR=/opt/x86-64-v2/vecgeom
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
     export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
-    mkdir build-avx
-    cd build-avx
-    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/root -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVc_IMPL=AVX
+    mkdir build-x86-64-v2
+    cd build-x86-64-v2
+    cmake -G Ninja ../src/ $ROOT_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v2/root -DCMAKE_C_FLAGS='-march=x86-64-v2' -DCMAKE_CXX_FLAGS='-march=x86-64-v2' -DTARGET_ARCHITECTURE=x86-64-v2
     ninja
     ninja install
     cd ..
@@ -64,24 +64,24 @@ From: {{BASE}}
     GEANT4_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_USE_TBB=ON -DGEANT4_USE_USOLIDS=ON"
     cd geant4-build
 
-    VECGEOM_DIR=/opt/avx2/vecgeom
+    VECGEOM_DIR=/opt/x86-64-v3/vecgeom
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
     export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
-    mkdir build-avx2
-    cd build-avx2
-    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx2/geant4 -DCMAKE_C_FLAGS='-mavx2 -mfma' -DCMAKE_CXX_FLAGS='-mavx2 -mfma' -DVc_IMPL=AVX2
+    mkdir build-x86-64-v3
+    cd build-x86-64-v3
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/geant4 -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DTARGET_ARCHITECTURE=x86-64-v3
     ninja
     ninja install
     cd ..
 
-    VECGEOM_DIR=/opt/avx/vecgeom
+    VECGEOM_DIR=/opt/x86-64-v2/vecgeom
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
     export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
-    mkdir build-avx
-    cd build-avx
-    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/avx/geant4 -DCMAKE_C_FLAGS='-mavx' -DCMAKE_CXX_FLAGS='-mavx' -DVc_IMPL=AVX
+    mkdir build-x86-64-v2
+    cd build-x86-64-v2
+    cmake -G Ninja ../src/ $GEANT4_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v2/geant4 -DCMAKE_C_FLAGS='-march=x86-64-v2' -DCMAKE_CXX_FLAGS='-march=x86-64-v2' -DTARGET_ARCHITECTURE=x86-64-v2
     ninja
     ninja install
     cd ..
@@ -89,18 +89,28 @@ From: {{BASE}}
     rm -rf geant4-build
 
 %environment
-    if test -n "$(cat /proc/cpuinfo | grep flags | grep avx2)" -a -n "$(cat /proc/cpuinfo | grep flags | grep fma)"; then
-        RUNTIME_CPU_ISX=avx2
-    elif test -n "$(cat /proc/cpuinfo | grep flags | grep avx)"; then
-        RUNTIME_CPU_ISX=avx
+    cpu_has_feature() {
+        if test -n "$(cat /proc/cpuinfo | grep flags | grep $1)"; then
+            # 0 = true
+            return 0
+        else
+            # 1 = false
+            return 1
+        fi
+    }
+
+    if cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma; then
+        RUNTIME_CPU_ARCH=x86-64-v3
+    elif cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
+        RUNTIME_CPU_ARCH=x86-64-v2
     else
-        echo "Warning: It seems that even AVX is not available. Try another machine if you cannot run."
-        RUNTIME_CPU_ISX=avx
+        echo "Warning: It seems that even x86-64-v2 is not available. Try another machine if you cannot run."
+        RUNTIME_CPU_ARCH=x86-64-v2
     fi
 
-    VECGEOM_DIR=/opt/$RUNTIME_CPU_ISX/vecgeom
-    GEANT4_DIR=/opt/$RUNTIME_CPU_ISX/geant4
-    ROOT_DIR=/opt/$RUNTIME_CPU_ISX/root
+    VECGEOM_DIR=/opt/$RUNTIME_CPU_ARCH/vecgeom
+    GEANT4_DIR=/opt/$RUNTIME_CPU_ARCH/geant4
+    ROOT_DIR=/opt/$RUNTIME_CPU_ARCH/root
     export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
     export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
     export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH

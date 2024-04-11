@@ -7,6 +7,7 @@ From: rgb-base.sif
 %post
     apt -y update
     apt -y upgrade
+    apt -y install rdma-core librdmacm-dev
     apt -y autopurge
     apt clean
 
