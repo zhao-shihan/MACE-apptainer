@@ -18,8 +18,8 @@ From: rgb-base.sif
     tar -xf mpich.tar.gz
     mkdir build
     cd build
-    # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --enable-error-messages=all --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
-    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --disable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CFLAGS='-march=x86-64-v2' CXXFLAGS='-O3 -DNDEBUG -march=x86-64-v2'
+    # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --enable-error-messages=all --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CFLAGS='-march=x86-64-v2' CXXFLAGS='-O3 -DNDEBUG -march=x86-64-v2'
     make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
     make install
     cd ../..
