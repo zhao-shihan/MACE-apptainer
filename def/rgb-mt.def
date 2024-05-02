@@ -33,7 +33,7 @@ From: {{BASE}}
     cd ..
     rm -rf vecgeom-build
 
-    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=OFF -During=ON -Dvecgeom=ON"
+    ROOT_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dunuran=ON -During=ON -Dvecgeom=ON"
     cd root-build
 
     VECGEOM_DIR=/opt/x86-64-v3/vecgeom
