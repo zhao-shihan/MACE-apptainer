@@ -19,6 +19,7 @@ From: debian:{{DEBIAN_VERSION}}
     G4ENSDFSTATE_VERSION=2.3
     G4TENDL_VERSION=1.4
     G4DATA_ARCHIVE_HOST_DIR=
+    GARFIELDPP_VERSION=5.0
 
 %files
     {{G4DATA_ARCHIVE_HOST_DIR}}/G4NDL.{{G4NDL_VERSION}}.tar.gz /opt
@@ -37,18 +38,19 @@ From: debian:{{DEBIAN_VERSION}}
 %post
     apt -y update
     apt -y install apt-utils
-    apt -y upgrade
+    apt -y full-upgrade
     apt -y autopurge
 
     cd /opt
 
     apt -y install wget
 
-    mkdir vecgeom-build geant4-build root-build
+    mkdir vecgeom-build geant4-build root-build garfield++-build
 
     wget -q -c -t=999 https://gitlab.cern.ch/VecGeom/VecGeom/-/archive/v{{VECGEOM_VERSION}}/VecGeom-v{{VECGEOM_VERSION}}.tar.gz -O vecgeom-build/vecgeom.tar.gz &
     wget -q -c -t=999 https://root.cern/download/root_v{{ROOT_VERSION}}.source.tar.gz -O root-build/root.tar.gz &
     wget -q -c -t=999 https://gitlab.cern.ch/geant4/geant4/-/archive/v{{GEANT4_VERSION}}/geant4-v{{GEANT4_VERSION}}.tar.gz -O geant4-build/geant4.tar.gz &
+    wget -q -c -t=999 https://gitlab.cern.ch/garfield/garfieldpp/-/archive/{{GARFIELDPP_VERSION}}/garfieldpp-{{GARFIELDPP_VERSION}}.tar.gz -O garfield++-build/garfield++.tar.gz &
 
     wait
 
@@ -56,14 +58,24 @@ From: debian:{{DEBIAN_VERSION}}
     tar -xf vecgeom.tar.gz
     mv VecGeom-v{{VECGEOM_VERSION}} src
     rm vecgeom.tar.gz
-    cd ../root-build
+    cd ..
+
+    cd root-build
     tar -xf root.tar.gz
     mv root-{{ROOT_VERSION}} src
     rm root.tar.gz
-    cd ../geant4-build
+    cd ..
+
+    cd geant4-build
     tar -xf geant4.tar.gz
     mv geant4-v{{GEANT4_VERSION}} src
     rm geant4.tar.gz
+    cd ..
+
+    cd garfield++-build
+    tar -xf garfield++.tar.gz
+    mv garfieldpp-{{GARFIELDPP_VERSION}} src
+    rm garfield++.tar.gz
     cd ..
 
     mkdir geant4-data
@@ -108,7 +120,10 @@ From: debian:{{DEBIAN_VERSION}}
     rm G4TENDL.tar.gz
     cd ..
 
-    apt -y install build-essential clang curl nano git cmake ninja-build python3-dev python3 python3-numpy python3-venv python3-pip libx11-dev libxpm-dev libxft-dev libxext-dev libpng-dev libjpeg-dev libssl-dev uuid-dev libpcre3-dev default-libmysqlclient-dev libfftw3-dev libcfitsio-dev libavahi-compat-libdnssd-dev libldap-dev libxml2-dev libkrb5-dev libopenblas-dev libgsl-dev libunuran-dev liburing-dev libgraphviz-dev libgif-dev davix-dev libgl2ps-dev liblz4-dev lzma-dev nlohmann-json3-dev libvdt-dev libxrootd-client-dev libxrootd-server-dev libxxhash-dev libxerces-c-dev libexpat1-dev libglib2.0-dev gnulib libzstd-dev veccore-dev binutils-dev libdw-dev libunwind-dev libeigen3-dev libfmt-dev libbackward-cpp-dev libmsgsl-dev libyaml-cpp-dev
+    apt -y install build-essential gfortran clang gdb curl vim nano git cmake ninja-build python3-dev python3 python3-numpy python3-venv python3-pip libx11-dev libxpm-dev libxft-dev libxext-dev libpng-dev libjpeg-dev libssl-dev uuid-dev libpcre3-dev default-libmysqlclient-dev libfftw3-dev libcfitsio-dev libavahi-compat-libdnssd-dev libldap-dev libxml2-dev libkrb5-dev libopenblas-dev libgsl-dev libunuran-dev liburing-dev libgraphviz-dev libgif-dev davix-dev libgl2ps-dev liblz4-dev lzma-dev nlohmann-json3-dev libvdt-dev libxrootd-client-dev libxrootd-server-dev libxxhash-dev libxerces-c-dev libexpat1-dev libglib2.0-dev gnulib libzstd-dev veccore-dev binutils-dev libdw-dev libunwind-dev libeigen3-dev libfmt-dev libbackward-cpp-dev libmsgsl-dev libyaml-cpp-dev python-is-python3 python-dev-is-python3
+
+    update-alternatives --set cc $(which clang)
+    update-alternatives --set c++ $(which clang++)
 
     apt -y autopurge
     apt clean
@@ -131,6 +146,7 @@ From: debian:{{DEBIAN_VERSION}}
     G4INCL {{G4INCL_VERSION}}
     G4ENSDFSTATE {{G4ENSDFSTATE_VERSION}}
     G4TENDL {{G4TENDL_VERSION}}
+    Garfield++ {{GARFIELDPP_VERSION}}
 
 %environment
     export LC_ALL=C

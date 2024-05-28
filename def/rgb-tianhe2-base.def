@@ -2,11 +2,11 @@ Bootstrap: localimage
 From: rgb-base.sif
 
 %arguments
-    MPICH_VERSION=4.1.3
+    MPICH_VERSION=4.2.1
 
 %post
     apt -y update
-    apt -y upgrade
+    apt -y full-upgrade
     apt -y install rdma-core librdmacm-dev
     apt -y autopurge
     apt clean
@@ -18,8 +18,7 @@ From: rgb-base.sif
     tar -xf mpich.tar.gz
     mkdir build
     cd build
-    # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --enable-error-messages=all --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --enable-ch4-netmod-inline --with-device=ch4:ofi:tcp --with-ch4-shmmods=posix CXXFLAGS=-O3
-    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --enable-ch4-netmod-inline --with-device=ch4:ofi:tcp --with-ch4-shmmods=posix CFLAGS='-march=ivybridge' CXXFLAGS='-O3 -DNDEBUG -march=ivybridge'
+    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --enable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --disable-static --enable-ch4-netmod-inline --with-device=ch4:ofi:tcp --with-ch4-shmmods=posix CC=clang CXX=clang++ CFLAGS='-march=ivybridge' CXXFLAGS='-march=ivybridge' FCFLAGS='-march=ivybridge' FFLAGS='-march=ivybridge'
     make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
     make install
     cd ../..
@@ -29,8 +28,9 @@ From: rgb-base.sif
     MPI mpich-{{MPICH_VERSION}}
 
 %environment
-    export PATH=/opt/mpich/bin:$PATH
-    export LIBRARY_PATH=/opt/mpich/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/mpich/lib:$LD_LIBRARY_PATH
-    export MANPATH=/opt/mpich/share/man:$MANPATH
-    export CMAKE_PREFIX_PATH=/opt/mpich:$CMAKE_PREFIX_PATH
+    MPICH_DIR=/opt/mpich
+    export PATH=$MPICH_DIR/bin:$PATH
+    export LIBRARY_PATH=$MPICH_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
+    export MANPATH=$MPICH_DIR/share/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$MPICH_DIR:$CMAKE_PREFIX_PATH

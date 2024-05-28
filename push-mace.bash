@@ -6,7 +6,7 @@ success_or_exit() {
     fi
 }
 
-success_or_exit "apptainer remote login --username $1 --password $2 oras://docker.io"
+success_or_exit "apptainer registry login --username $1 --password $2 oras://docker.io"
 
 apptainer verify mace-tianhe2.sif &
 apptainer verify mace-tianhe2-slim.sif &

@@ -3,14 +3,14 @@ apptainer build \
     rgb-base.sif \
     def/rgb-base.def
 apptainer build \
+    rgb-tianhe2-base.sif \
+    def/rgb-tianhe2-base.def &
+apptainer build \
     rgb-mpich-base.sif \
     def/rgb-mpich-base.def &
 apptainer build \
     rgb-openmpi-base.sif \
     def/rgb-openmpi-base.def &
-apptainer build \
-    rgb-tianhe2-base.sif \
-    def/rgb-tianhe2-base.def &
 wait
 
 apptainer build \

@@ -3,7 +3,7 @@ From: rgb-tianhe2-base.sif
 
 %post
     apt -y update
-    apt -y upgrade
+    apt -y full-upgrade
     apt -y autopurge
     apt clean
 
@@ -12,7 +12,7 @@ From: rgb-tianhe2-base.sif
     cd vecgeom-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/vecgeom -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DBUILD_SHARED_LIBS=OFF -DVECGEOM_VECTOR=avx -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON -DTARGET_ARCHITECTURE=ivy-bridge
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/vecgeom -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DBUILD_SHARED_LIBS=OFF -DVECGEOM_VECTOR=avx -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
     ninja
     ninja install
     cd ../..
@@ -26,7 +26,7 @@ From: rgb-tianhe2-base.sif
     cd root-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dunuran=ON -During=ON -Dvecgeom=ON -Dx11=OFF -DTARGET_ARCHITECTURE=ivy-bridge
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/root -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -Dasimage=OFF -Dfftw3=ON -Dgviz=ON -Dimt=OFF -Dmathmore=ON -Dmpi=ON -Dopengl=OFF -Dshadowpw=ON -Dsoversion=ON -Dunuran=ON -During=ON -Dvc=ON -Dveccore=ON -Dvecgeom=ON -Dx11=OFF -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
     ninja
     ninja install
     cd ../..
@@ -35,20 +35,48 @@ From: rgb-tianhe2-base.sif
     cd geant4-build
     mkdir build
     cd build
-    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DGEANT4_BUILD_MULTITHREADED=OFF -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DGEANT4_INSTALL_EXAMPLES=OFF -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF -DGEANT4_USE_USOLIDS=ON -DTARGET_ARCHITECTURE=ivy-bridge
+    cmake -G Ninja ../src/ -DCMAKE_INSTALL_PREFIX=/opt/geant4 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DGEANT4_BUILD_MULTITHREADED=OFF -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DGEANT4_INSTALL_EXAMPLES=OFF -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_BUILD_STORE_TRAJECTORY=OFF -DGEANT4_BUILD_VERBOSE_CODE=OFF -DGEANT4_USE_USOLIDS=ON -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
     ninja
     ninja install
     cd ../..
     rm -rf geant4-build
 
+    cd garfield++-build
+    mkdir build
+    cd build
+    cmake ../src/ -DCMAKE_INSTALL_PREFIX=/opt/garfield++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DCMAKE_Fortran_FLAGS='-march=ivybridge' -DBUILD_SHARED_LIBS=ON -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
+    make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
+    make install
+    cd ../..
+    rm -rf garfield++-build
+
 %environment
-    export PATH=/opt/geant4/bin:/opt/root/bin:$PATH
-    export LIBRARY_PATH=/opt/vecgeom:/opt/geant4/lib:/opt/root/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/vecgeom:/opt/geant4/lib:/opt/root/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=/opt/root/lib:$PYTHONPATH
-    export MANPATH=/opt/root/man:$MANPATH
-    export CMAKE_PREFIX_PATH=/opt/vecgeom:/opt/geant4:/opt/root:$CMAKE_PREFIX_PATH
-    export JUPYTER_PATH=/opt/root/etc/notebook:$JUPYTER_PATH
-    export JUPYTER_CONFIG_DIR=/opt/root/etc/notebook:$JUPYTER_CONFIG_DIR
-    export ROOTSYS=/opt/root
+    VECGEOM_DIR=/opt/vecgeom
+    export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+
+    GEANT4_DIR=/opt/geant4
+    export PATH=$GEANT4_DIR/bin:$PATH
+    export LIBRARY_PATH=$GEANT4_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$GEANT4_DIR:$CMAKE_PREFIX_PATH
+
+    ROOT_DIR=/opt/root
+    export PATH=$ROOT_DIR/bin:$PATH
+    export LIBRARY_PATH=$ROOT_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$ROOT_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+    export MANPATH=$ROOT_DIR/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$ROOT_DIR:$CMAKE_PREFIX_PATH
+    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+    export ROOTSYS=$ROOT_DIR
     export CLING_STANDARD_PCH=none
+
+    export GARFIELD_INSTALL=/opt/garfield++
+    export LIBRARY_PATH=$GARFIELD_INSTALL/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$GARFIELD_INSTALL/lib:$LD_LIBRARY_PATH
+    export CMAKE_PREFIX_PATH=$GARFIELD_INSTALL:$CMAKE_PREFIX_PATH
+    export HEED_DATABASE=$GARFIELD_INSTALL/share/Heed/database
+    export PYTHONPATH=$(find $GARFIELD_INSTALL/lib -name site-packages | sed -n 1p):$PYTHONPATH

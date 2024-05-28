@@ -16,47 +16,37 @@ From: {{RGB}}
     mv MACE MACE-build
     cd MACE-build
 
-    MACE_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=ON -DMACE_ENABLE_IPO=ON -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=OFF"
+    for arch in 'x86-64-v2' 'x86-64-v3'; do
+        VECGEOM_DIR=/opt/$arch/vecgeom
+        export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
+        export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
+        export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
 
-    VECGEOM_DIR=/opt/x86-64-v3/vecgeom
-    GEANT4_DIR=/opt/x86-64-v3/geant4
-    ROOT_DIR=/opt/x86-64-v3/root
-    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
-    export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
-    export MANPATH=$ROOT_DIR/man:$MANPATH
-    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
-    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
-    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
-    export ROOTSYS=$ROOT_DIR
-    export CLING_STANDARD_PCH=none
-    mkdir build-x86-64-v3
-    cd build-x86-64-v3
-    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/MACE -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DTARGET_ARCHITECTURE=x86-64-v3
-    ninja
-    ninja install
-    cd ..
+        GEANT4_DIR=/opt/$arch/geant4
+        export PATH=$GEANT4_DIR/bin:$PATH
+        export LIBRARY_PATH=$GEANT4_DIR/lib:$LIBRARY_PATH
+        export LD_LIBRARY_PATH=$GEANT4_DIR/lib:$LD_LIBRARY_PATH
+        export CMAKE_PREFIX_PATH=$GEANT4_DIR:$CMAKE_PREFIX_PATH
 
-    VECGEOM_DIR=/opt/x86-64-v2/vecgeom
-    GEANT4_DIR=/opt/x86-64-v2/geant4
-    ROOT_DIR=/opt/x86-64-v2/root
-    export PATH=$GEANT4_DIR/bin:$ROOT_DIR/bin:$PATH
-    export LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$GEANT4_DIR/lib:$ROOT_DIR/lib:$LD_LIBRARY_PATH
-    export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
-    export MANPATH=$ROOT_DIR/man:$MANPATH
-    export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$GEANT4_DIR:$ROOT_DIR:$CMAKE_PREFIX_PATH
-    export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
-    export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
-    export ROOTSYS=$ROOT_DIR
-    export CLING_STANDARD_PCH=none
-    mkdir build-x86-64-v2
-    cd build-x86-64-v2
-    cmake -G Ninja ../MACE $MACE_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v2/MACE -DCMAKE_C_FLAGS='-march=x86-64-v2' -DCMAKE_CXX_FLAGS='-march=x86-64-v2' -DTARGET_ARCHITECTURE=x86-64-v2
-    ninja
-    ninja install
-    cd ..
+        ROOT_DIR=/opt/$arch/root
+        export PATH=$ROOT_DIR/bin:$PATH
+        export LIBRARY_PATH=$ROOT_DIR/lib:$LIBRARY_PATH
+        export LD_LIBRARY_PATH=$ROOT_DIR/lib:$LD_LIBRARY_PATH
+        export PYTHONPATH=$ROOT_DIR/lib:$PYTHONPATH
+        export MANPATH=$ROOT_DIR/man:$MANPATH
+        export CMAKE_PREFIX_PATH=$ROOT_DIR:$CMAKE_PREFIX_PATH
+        export JUPYTER_PATH=$ROOT_DIR/etc/notebook:$JUPYTER_PATH
+        export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
+        export ROOTSYS=$ROOT_DIR
+        export CLING_STANDARD_PCH=none
+
+        mkdir build-$arch
+        cd build-$arch
+        cmake -G Ninja ../MACE -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=ON -DMACE_ENABLE_IPO=ON -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/opt/$arch/MACE -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
+        ninja
+        ninja install
+        cd ..
+    done
 
     cd ..
     rm -rf MACE-build

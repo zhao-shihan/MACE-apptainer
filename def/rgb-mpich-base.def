@@ -2,11 +2,11 @@ Bootstrap: localimage
 From: rgb-base.sif
 
 %arguments
-    MPICH_VERSION=4.1.3
+    MPICH_VERSION=4.2.1
 
 %post
     apt -y update
-    apt -y upgrade
+    apt -y full-upgrade
     apt -y install rdma-core librdmacm-dev libglu1-mesa-dev libglew-dev libftgl-dev libafterimage-dev qt3d5-dev libxmu-dev qtwebengine5-dev
     apt -y autopurge
     apt clean
@@ -16,21 +16,57 @@ From: rgb-base.sif
     cd mpich-build
     wget -c -t=999 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
     tar -xf mpich.tar.gz
-    mkdir build
-    cd build
-    # ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --enable-error-messages=all --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CXXFLAGS=-O3
-    ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/x86-64-v2/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --disable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --enable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CFLAGS='-march=x86-64-v2' CXXFLAGS='-O3 -DNDEBUG -march=x86-64-v2'
-    make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l)
-    make install
-    cd ../..
+
+    for arch in 'x86-64-v2' 'x86-64-v3'; do
+        mkdir build-$arch
+        cd build-$arch
+        ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/$arch/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --enable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CC=clang CXX=clang++ CFLAGS="-march=$arch" CXXFLAGS="-march=$arch" FCFLAGS="-march=$arch" FFLAGS="-march=$arch" &
+        cd ..
+    done
+    wait
+
+    for arch in 'x86-64-v2' 'x86-64-v3'; do
+        cd build-$arch
+        make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l) &
+        cd ..
+    done
+    wait
+
+    for arch in 'x86-64-v2' 'x86-64-v3'; do
+        cd build-$arch
+        make install
+        cd ..
+    done
+
+    cd ..
     rm -rf mpich-build
 
 %labels
     MPI mpich-{{MPICH_VERSION}}
 
 %environment
-    export PATH=/opt/x86-64-v2/mpich/bin:$PATH
-    export LIBRARY_PATH=/opt/x86-64-v2/mpich/lib:$LIBRARY_PATH
-    export LD_LIBRARY_PATH=/opt/x86-64-v2/mpich/lib:$LD_LIBRARY_PATH
-    export MANPATH=/opt/x86-64-v2/mpich/share/man:$MANPATH
-    export CMAKE_PREFIX_PATH=/opt/x86-64-v2/mpich:$CMAKE_PREFIX_PATH
+    cpu_has_feature() {
+        if test -n "$(cat /proc/cpuinfo | grep flags | grep $1)"; then
+            # 0 = true
+            return 0
+        else
+            # 1 = false
+            return 1
+        fi
+    }
+
+    if cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma; then
+        RUNTIME_CPU_ARCH=x86-64-v3
+    elif cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
+        RUNTIME_CPU_ARCH=x86-64-v2
+    else
+        echo "Warning: It seems that even x86-64-v2 is not available. Try another machine if you cannot run."
+        RUNTIME_CPU_ARCH=x86-64-v2
+    fi
+
+    MPICH_DIR=/opt/$RUNTIME_CPU_ARCH/mpich
+    export PATH=$MPICH_DIR/bin:$PATH
+    export LIBRARY_PATH=$MPICH_DIR/lib:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
+    export MANPATH=$MPICH_DIR/share/man:$MANPATH
+    export CMAKE_PREFIX_PATH=$MPICH_DIR:$CMAKE_PREFIX_PATH
