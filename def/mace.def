@@ -16,7 +16,7 @@ From: {{RGB}}
     mv MACE MACE-build
     cd MACE-build
 
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         VECGEOM_DIR=/opt/$arch/vecgeom
         export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH

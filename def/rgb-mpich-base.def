@@ -17,7 +17,7 @@ From: rgb-base.sif
     wget -c -t=999 https://www.mpich.org/static/downloads/{{MPICH_VERSION}}/mpich-{{MPICH_VERSION}}.tar.gz -O mpich.tar.gz
     tar -xf mpich.tar.gz
 
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         mkdir build-$arch
         cd build-$arch
         ../mpich-{{MPICH_VERSION}}/configure --build=x86_64-linux-gnu --prefix=/opt/$arch/mpich --disable-error-checking --enable-tag-error-bits --disable-timing --disable-g --disable-mpit-pvars --enable-fast=O3,ndebug,alwaysinline --enable-romio --enable-fortran --enable-threads=multiple --disable-dependency-tracking --enable-shared --disable-static --with-device=ch4:ofi --with-ch4-shmmods=posix CC=clang CXX=clang++ CFLAGS="-march=$arch" CXXFLAGS="-march=$arch" FCFLAGS="-march=$arch" FFLAGS="-march=$arch" &
@@ -25,14 +25,14 @@ From: rgb-base.sif
     done
     wait
 
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         cd build-$arch
         make -j$(grep "processor" /proc/cpuinfo | sort | uniq | wc -l) &
         cd ..
     done
     wait
 
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         cd build-$arch
         make install
         cd ..
@@ -46,7 +46,7 @@ From: rgb-base.sif
 
 %environment
     cpu_has_feature() {
-        if test -n "$(cat /proc/cpuinfo | grep flags | grep $1)"; then
+        if test -n "$(grep flags /proc/cpuinfo | grep $1)"; then
             # 0 = true
             return 0
         else
@@ -55,9 +55,11 @@ From: rgb-base.sif
         fi
     }
 
-    if cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma; then
+    if cpu_has_feature avx512f && cpu_has_feature avx512bw && cpu_has_feature avx512cd && cpu_has_feature avx512dq && cpu_has_feature avx512vl; then
+        RUNTIME_CPU_ARCH=x86-64-v4
+    elif cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma && cpu_has_feature movbe && cpu_has_feature xsave; then
         RUNTIME_CPU_ARCH=x86-64-v3
-    elif cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
+    elif cpu_has_feature cx16 && cpu_has_feature lahf && cpu_has_feature popcnt && cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
         RUNTIME_CPU_ARCH=x86-64-v2
     else
         echo "Warning: It seems that even x86-64-v2 is not available. Try another machine if you cannot run."

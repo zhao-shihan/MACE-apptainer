@@ -14,7 +14,7 @@ From: rgb-base.sif
 
 %environment
     cpu_has_feature() {
-        if test -n "$(cat /proc/cpuinfo | grep flags | grep $1)"; then
+        if test -n "$(grep flags /proc/cpuinfo | grep $1)"; then
             # 0 = true
             return 0
         else
@@ -23,9 +23,11 @@ From: rgb-base.sif
         fi
     }
 
-    if cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma; then
+    if cpu_has_feature avx512f && cpu_has_feature avx512bw && cpu_has_feature avx512cd && cpu_has_feature avx512dq && cpu_has_feature avx512vl; then
+        RUNTIME_CPU_ARCH=x86-64-v4
+    elif cpu_has_feature avx && cpu_has_feature avx2 && cpu_has_feature bmi && cpu_has_feature bmi2 && cpu_has_feature f16c && cpu_has_feature fma && cpu_has_feature movbe && cpu_has_feature xsave; then
         RUNTIME_CPU_ARCH=x86-64-v3
-    elif cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
+    elif cpu_has_feature cx16 && cpu_has_feature lahf && cpu_has_feature popcnt && cpu_has_feature sse3 && cpu_has_feature sse4.1 && cpu_has_feature sse4.2 && cpu_has_feature ssse3; then
         RUNTIME_CPU_ARCH=x86-64-v2
     else
         echo "Warning: It seems that even x86-64-v2 is not available. Try another machine if you cannot run."

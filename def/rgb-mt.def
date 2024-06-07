@@ -16,6 +16,14 @@ From: {{BASE}}
     VECGEOM_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DBUILD_SHARED_LIBS=OFF -DVECGEOM_BACKEND=Vc -DVECGEOM_GDML=ON -DVECGEOM_FAST_MATH=ON"
     cd vecgeom-build
 
+    mkdir build-x86-64-v4
+    cd build-x86-64-v4
+    #                                                                                                                                                       max value for VECGEOM_VECTOR is avx2...
+    cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v4/vecgeom -DCMAKE_C_FLAGS='-march=x86-64-v4' -DCMAKE_CXX_FLAGS='-march=x86-64-v4' -DVECGEOM_VECTOR=avx2 -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=x86-64-v4
+    ninja
+    ninja install
+    cd ..
+
     mkdir build-x86-64-v3
     cd build-x86-64-v3
     cmake -G Ninja ../src/ $VECGEOM_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=/opt/x86-64-v3/vecgeom -DCMAKE_C_FLAGS='-march=x86-64-v3' -DCMAKE_CXX_FLAGS='-march=x86-64-v3' -DVECGEOM_VECTOR=avx2 -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=x86-64-v3
@@ -34,7 +42,7 @@ From: {{BASE}}
     rm -rf vecgeom-build
 
     cd root-build
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         VECGEOM_DIR=/opt/$arch/vecgeom
         export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
@@ -50,7 +58,7 @@ From: {{BASE}}
     rm -rf root-build
 
     cd geant4-build
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         VECGEOM_DIR=/opt/$arch/vecgeom
         export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
@@ -66,7 +74,7 @@ From: {{BASE}}
     rm -rf geant4-build
 
     cd garfield++-build
-    for arch in 'x86-64-v2' 'x86-64-v3'; do
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
         VECGEOM_DIR=/opt/$arch/vecgeom
         export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
