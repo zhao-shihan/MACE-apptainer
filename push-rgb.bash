@@ -6,7 +6,7 @@ success_or_exit() {
     fi
 }
 
-success_or_exit "apptainer registry login --username $1 --password $2 oras://docker.io"
+success_or_exit "apptainer registry login --username $1 --password $2 oras://ghcr.io"
 
 apptainer verify rgb-tianhe2.sif &
 apptainer verify rgb-tianhe2-mt.sif &
@@ -40,15 +40,15 @@ auto_retry() {
     fi
 }
 
-auto_retry 999 "apptainer push rgb-tianhe2.sif oras://docker.io/zhaoshh/rgb:tianhe2" &
-auto_retry 999 "apptainer push rgb-tianhe2-mt.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt" &
-auto_retry 999 "apptainer push rgb-tianhe2-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-slim" &
-auto_retry 999 "apptainer push rgb-tianhe2-mt-slim.sif oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim" &
+auto_retry 999 "apptainer push rgb-tianhe2.sif oras://ghcr.io/zhao-shihan/rgb:tianhe2" &
+auto_retry 999 "apptainer push rgb-tianhe2-mt.sif oras://ghcr.io/zhao-shihan/rgb:tianhe2-mt" &
+auto_retry 999 "apptainer push rgb-tianhe2-slim.sif oras://ghcr.io/zhao-shihan/rgb:tianhe2-slim" &
+auto_retry 999 "apptainer push rgb-tianhe2-mt-slim.sif oras://ghcr.io/zhao-shihan/rgb:tianhe2-mt-slim" &
 for mpi in mpich openmpi; do
-    auto_retry 999 "apptainer push rgb-$mpi.sif oras://docker.io/zhaoshh/rgb:$mpi" &
-    auto_retry 999 "apptainer push rgb-$mpi-mt.sif oras://docker.io/zhaoshh/rgb:$mpi-mt" &
-    auto_retry 999 "apptainer push rgb-$mpi-slim.sif oras://docker.io/zhaoshh/rgb:$mpi-slim" &
-    auto_retry 999 "apptainer push rgb-$mpi-mt-slim.sif oras://docker.io/zhaoshh/rgb:$mpi-mt-slim" &
+    auto_retry 999 "apptainer push rgb-$mpi.sif oras://ghcr.io/zhao-shihan/rgb:$mpi" &
+    auto_retry 999 "apptainer push rgb-$mpi-mt.sif oras://ghcr.io/zhao-shihan/rgb:$mpi-mt" &
+    auto_retry 999 "apptainer push rgb-$mpi-slim.sif oras://ghcr.io/zhao-shihan/rgb:$mpi-slim" &
+    auto_retry 999 "apptainer push rgb-$mpi-mt-slim.sif oras://ghcr.io/zhao-shihan/rgb:$mpi-mt-slim" &
 done
 wait
-# auto_retry 999 "apptainer push rgb-mpich-mt.sif oras://docker.io/zhaoshh/rgb:latest"
+# auto_retry 999 "apptainer push rgb-mpich-mt.sif oras://ghcr.io/zhao-shihan/rgb:latest"

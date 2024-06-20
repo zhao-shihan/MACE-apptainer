@@ -22,23 +22,23 @@
 
 **Pull the image by:**
 
-- **`apptainer pull oras://docker.io/zhaoshh/rgb:<tag><aux>`**
+- **`apptainer pull oras://ghcr.io/zhao-shihan/rgb:<tag><aux>`**
 - **`<tag>` can be one of the followings: `mpich`, `openmpi`, and `tianhe2`.**
 - **`<aux>` can be nothing or `-mt` (for multi-threaded G4 and ROOT) or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables) or `-mt-slim` (combines the two).**
 
-For example, `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt` pulls down an container that MPI library is MPICH, and G4 and ROOT are multi-threading enabled, `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim` pulls down an container specialized for Tianhe-2 and contains single-threaded G4 and ROOT (parallel computing is support by MPI).
+For example, `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich-mt` pulls down an container that MPI library is MPICH, and G4 and ROOT are multi-threading enabled, `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2-slim` pulls down an container specialized for Tianhe-2 and contains single-threaded G4 and ROOT (parallel computing is support by MPI).
 
 **You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to do parallel computation correctly.** 
 
 If you don't care about MPI and just want a multi-purpose container , then
 
-- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich-mt`
 
 should be good enough.
 
 If you are going to run the container on Tianhe-2 supercomputer, here is a specialization:
 
-- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2`
 
 or with `-mt` or `-slim` or `-mt-slim`, up to your purpose.
 
@@ -126,18 +126,18 @@ You can also compile your favorite applications that depend on ROOT/Geant4 with 
 
 ## Pull command list
 
-- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-slim`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:mpich-mt-slim`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:openmpi`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:openmpi-mt`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:openmpi-slim`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:openmpi-mt-slim`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-mt`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-slim`
-- `apptainer pull oras://docker.io/zhaoshh/rgb:tianhe2-mt-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich-mt`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:mpich-mt-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:openmpi`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:openmpi-mt`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:openmpi-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:openmpi-mt-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2-mt`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/rgb:tianhe2-mt-slim`
 
 ## Notice
 

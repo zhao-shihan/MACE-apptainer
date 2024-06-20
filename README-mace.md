@@ -21,17 +21,17 @@
 
 **Pull the image by:**
 
-- **`apptainer pull oras://docker.io/zhaoshh/mace:<tag><aux>`**
+- **`apptainer pull oras://ghcr.io/zhao-shihan/mace:<tag><aux>`**
 - **`<tag>` can be one of the followings: `mpich`, `openmpi`, and `tianhe2`.**
 - **`<aux>` can be nothing or `-slim` (do not contain G4 data, smaller in size, but you need to install Geant4 data in your machine and setup environment variables).**
 
-For example, `apptainer pull oras://docker.io/zhaoshh/mace:mpich` pulls down an image that MPI library is MPICH, `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim` pulls down an image specialized for Tianhe-2 and does not contain Geant4 data.
+For example, `apptainer pull oras://ghcr.io/zhao-shihan/mace:mpich` pulls down an image that MPI library is MPICH, `apptainer pull oras://ghcr.io/zhao-shihan/mace:tianhe2-slim` pulls down an image specialized for Tianhe-2 and does not contain Geant4 data.
 
 **You should choose the correct MPI tag that compatible with MPI that installed in your machine, in order to do parallel computation correctly.** 
 
 If you are going to run the image on Tianhe-2 supercomputer, here is a specialization:
 
-- `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:tianhe2`
 
 or with `-slim`, up to your purpose.
 
@@ -88,7 +88,7 @@ The container contains MACE offline software and its dependencies:
 - `mace SimTarget`
 - `mace SimEMC`
 
-This container is built upon [RGB](https://hub.docker.com/r/zhaoshh/rgb), so **single-threaded** ROOT and Geant4 are also contained in this container, check them by
+This container is built upon [RGB](https://github.com/zhao-shihan/RGB-apptainer), so **single-threaded** ROOT and Geant4 are also contained in this container, check them by
 
 - `mace root` (or `mace root.exe` for Tianhe-2 specialization)
 - `mace geant4-config --version`
@@ -101,16 +101,16 @@ Common build tools like GCC, CMake, and Ninja are also provided:
 
 ### Other usage
 
-Other usage should be essentially the same as [RGB](https://hub.docker.com/r/zhaoshh/rgb).
+Other usage should be essentially the same as [RGB](https://github.com/zhao-shihan/RGB-apptainer).
 
 ## Pull command list
 
-- `apptainer pull oras://docker.io/zhaoshh/mace:mpich`
-- `apptainer pull oras://docker.io/zhaoshh/mace:mpich-slim`
-- `apptainer pull oras://docker.io/zhaoshh/mace:openmpi`
-- `apptainer pull oras://docker.io/zhaoshh/mace:openmpi-slim`
-- `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2`
-- `apptainer pull oras://docker.io/zhaoshh/mace:tianhe2-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:mpich`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:mpich-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:openmpi`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:openmpi-slim`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:tianhe2`
+- `apptainer pull oras://ghcr.io/zhao-shihan/mace:tianhe2-slim`
 
 ## Notice
 
