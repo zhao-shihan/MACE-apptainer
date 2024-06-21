@@ -41,12 +41,16 @@ From: {{BASE}}
     cd ..
     rm -rf vecgeom-build
 
-    cd root-build
-    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
-        VECGEOM_DIR=/opt/$arch/vecgeom
+    update_vecgeom_env() {
+        VECGEOM_DIR=/opt/$1/vecgeom
         export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
         export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+    }
+
+    cd root-build
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
+        update_vecgeom_env $arch
         mkdir build-$arch
         cd build-$arch
         cmake -G Ninja ../src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -Dfftw3=ON -Dgviz=ON -Dmathmore=ON -Dmpi=ON -Dqt5web=ON -Dshadowpw=ON -Dsoversion=ON -Dunuran=ON -During=ON -Dvc=ON -Dveccore=ON -Dvecgeom=ON -DCMAKE_INSTALL_PREFIX=/opt/$arch/root -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
@@ -59,10 +63,7 @@ From: {{BASE}}
 
     cd geant4-build
     for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
-        VECGEOM_DIR=/opt/$arch/vecgeom
-        export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
-        export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
-        export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
+        update_vecgeom_env $arch
         mkdir build-$arch
         cd build-$arch
         cmake -G Ninja ../src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DGEANT4_INSTALL_DATADIR=/opt/geant4-data -DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_SYSTEM_ZLIB=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DGEANT4_INSTALL_PACKAGE_CACHE=OFF -DGEANT4_INSTALL_DATASETS_TENDL=ON -DGEANT4_USE_TBB=ON -DGEANT4_USE_USOLIDS=ON -DCMAKE_INSTALL_PREFIX=/opt/$arch/geant4 -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
@@ -73,13 +74,8 @@ From: {{BASE}}
     cd ..
     rm -rf geant4-build
 
-    cd garfield++-build
-    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
-        VECGEOM_DIR=/opt/$arch/vecgeom
-        export LIBRARY_PATH=$VECGEOM_DIR/lib:$LIBRARY_PATH
-        export LD_LIBRARY_PATH=$VECGEOM_DIR/lib:$LD_LIBRARY_PATH
-        export CMAKE_PREFIX_PATH=$VECGEOM_DIR:$CMAKE_PREFIX_PATH
-        ROOT_DIR=/opt/$arch/root
+    update_root_env() {
+        ROOT_DIR=/opt/$1/root
         export PATH=$ROOT_DIR/bin:$PATH
         export LIBRARY_PATH=$ROOT_DIR/lib:$LIBRARY_PATH
         export LD_LIBRARY_PATH=$ROOT_DIR/lib:$LD_LIBRARY_PATH
@@ -90,6 +86,12 @@ From: {{BASE}}
         export JUPYTER_CONFIG_DIR=$ROOT_DIR/etc/notebook:$JUPYTER_CONFIG_DIR
         export ROOTSYS=$ROOT_DIR
         export CLING_STANDARD_PCH=none
+    }
+
+    cd garfield++-build
+    for arch in 'x86-64-v4' 'x86-64-v3' 'x86-64-v2'; do
+        update_vecgeom_env $arch
+        update_root_env $arch
         mkdir build-$arch
         cd build-$arch
         cmake ../src/ -DCMAKE_INSTALL_PREFIX=/opt/$arch/garfield++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DCMAKE_Fortran_FLAGS="-march=$arch" -DBUILD_SHARED_LIBS=ON -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
