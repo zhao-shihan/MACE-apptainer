@@ -1,8 +1,10 @@
-# MACE offline software apptainer container
+# MACE offline software apptainer image
+
+These containers contain pre-built, optimized [MACE offline software](https://github.com/zhao-shihan/MACE) and its dependencies.
 
 ## Contents
 
-- [MACE offline software apptainer container](#mace-offline-software-apptainer-container)
+- [MACE offline software apptainer image](#mace-offline-software-apptainer-image)
   - [Contents](#contents)
   - [Quick start](#quick-start)
     - [How to pull](#how-to-pull)

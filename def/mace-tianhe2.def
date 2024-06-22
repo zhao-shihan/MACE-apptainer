@@ -1,7 +1,8 @@
 Bootstrap: localimage
-From: rgb-tianhe2.sif
+From: {{MUSTARD}}
 
 %arguments
+    MUSTARD=
     MACE_SRC_HOST_DIR=
     MACE_TIME=
     MACE_COMMIT=
@@ -14,12 +15,15 @@ From: rgb-tianhe2.sif
     mkdir MACE-build
     mv MACE MACE-build
     cd MACE-build
+
     mkdir build
     cd build
-    cmake -G Ninja ../MACE -DCMAKE_INSTALL_PREFIX=/opt/MACE -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DMACE_BUILD_TEST=OFF -DMACE_BUILTIN_GENFIT_EVENT_DISPLAY=OFF -DMACE_USE_G4VIS=OFF -DMACE_USE_STATIC_G4=ON -DMACE_ENABLE_IPO=ON -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=OFF -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
+    cmake -G Ninja ../MACE -DCMAKE_INSTALL_PREFIX=/opt/MACE -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS='-march=ivybridge' -DCMAKE_CXX_FLAGS='-march=ivybridge' -DMACE_BUILTIN_GENFIT_EVENT_DISPLAY=OFF -DMACE_USE_G4VIS=OFF -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=ivy-bridge
     ninja
     ninja install
-    cd ../..
+    cd ..
+
+    cd ..
     rm -rf MACE-build
 
 %environment

@@ -1,11 +1,11 @@
 Bootstrap: localimage
-From: {{RGB}}
+From: {{MUSTARD}}
 
 %arguments
-    RGB=
+    MUSTARD=
     MACE_SRC_HOST_DIR=
-    MACE_COMMIT=
     MACE_TIME=
+    MACE_COMMIT=
 
 %files
     {{MACE_SRC_HOST_DIR}} /opt
@@ -40,9 +40,15 @@ From: {{RGB}}
         export ROOTSYS=$ROOT_DIR
         export CLING_STANDARD_PCH=none
 
-        mkdir build-$arch
-        cd build-$arch
-        cmake -G Ninja ../MACE -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DMACE_BUILD_TEST=OFF -DMACE_USE_STATIC_G4=ON -DMACE_ENABLE_IPO=ON -DMACE_FULL_UNITY_BUILD=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/opt/$arch/MACE -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
+        MUSTARD_DIR=/opt/$arch/Mustard
+        export PATH=$MUSTARD_DIR/bin:$PATH
+        export LIBRARY_PATH=$MUSTARD_DIR/lib:$LIBRARY_PATH
+        export LD_LIBRARY_PATH=$MUSTARD_DIR/lib:$LD_LIBRARY_PATH
+        export CMAKE_PREFIX_PATH=$MUSTARD_DIR:$CMAKE_PREFIX_PATH
+
+        mkdir build
+        cd build
+        cmake -G Ninja ../MACE -DCMAKE_INSTALL_PREFIX=/opt/$arch/MACE -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_STANDARD=17 -DCMAKE_CXX_STANDARD=20 -DCMAKE_C_FLAGS="-march=$arch" -DCMAKE_CXX_FLAGS="-march=$arch" -DUSE_LIBMVEC=ON -DTARGET_ARCHITECTURE=$arch
         ninja
         ninja install
         cd ..
