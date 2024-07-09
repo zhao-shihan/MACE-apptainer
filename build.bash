@@ -5,7 +5,7 @@ cd ..
 
 build_mace() {
     apptainer build \
-        --build-arg MUSTARD="$(pwd)/../Mustard-apptainer/mustard-$1.sif" \
+        --build-arg MUSTARD="$(pwd)/../RGB/rgb-$1.sif" \
         --build-arg MACE_SRC_HOST_DIR="$(pwd)/MACE" \
         --build-arg MACE_COMMIT=$MUSTARD_COMMIT \
         --build-arg MACE_TIME=$MUSTARD_TIME \
