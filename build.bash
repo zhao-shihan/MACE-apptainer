@@ -18,9 +18,7 @@ build_mace() {
 }
 
 build_mace tianhe2 mace-tianhe2.def &
-build_mace tianhe2-mt mace-tianhe2.def &
 for mpi in mpich openmpi; do
     build_mace $mpi mace.def &
-    build_mace $mpi-mt mace.def &
 done
 wait
